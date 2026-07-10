@@ -1819,6 +1819,7 @@ function toast(msg){
 
 /* ================= RESUME SESSION ================= */
 if(state.className && state.userName){
+  writeStateToURL();
   enterApp();
 }
 </script>
