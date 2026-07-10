@@ -1,0 +1,1783 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IMMUNE-CAMP</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" as="style" crossorigin
+  href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<style>
+:root{
+  --red:#f33939;
+  --yellow:#f3d439;
+  --mint:#6ff5d5;
+  --cream:#f9ebcc;
+  --caution:#f38639;
+  --ink:#2b2320;
+  --ink-soft:#7a6a56;
+  --card:#ffffff;
+
+  --red-soft: rgba(243,57,57,0.10);
+  --yellow-soft: rgba(243,212,57,0.24);
+  --mint-soft: rgba(111,245,213,0.30);
+  --caution-soft: rgba(243,134,57,0.20);
+  --neutral-soft: rgba(43,35,32,0.05);
+
+  --radius-lg:22px;
+  --radius-md:16px;
+  --radius-sm:12px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Pretendard',-apple-system,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  background: var(--cream);
+  color:var(--ink);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+.icon{display:inline-flex; flex-shrink:0;}
+.icon svg{width:100%; height:100%; display:block;}
+#app{
+  max-width:480px;
+  margin:0 auto;
+  min-height:100vh;
+  position:relative;
+  padding-bottom:100px;
+}
+.screen{display:none; animation: fadeIn .3s ease;}
+.screen.active{display:block;}
+@keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+/* ---------- Onboarding ---------- */
+.onboard{
+  min-height:100vh;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding:32px 24px;
+  text-align:center;
+}
+.onboard-badge{
+  font-size:13px; letter-spacing:3px; font-weight:800; color:var(--ink);
+  background:var(--yellow); padding:6px 14px; border-radius:99px; margin-bottom:18px;
+  border:2.5px solid var(--ink);
+}
+.onboard h1{
+  font-size:28px; margin:0 0 6px; font-weight:800; color:var(--ink);
+}
+.onboard p.sub{
+  color:var(--ink-soft); margin:0 0 28px; font-size:14px;
+}
+.class-grid{
+  display:grid; grid-template-columns:repeat(3,1fr); gap:12px; width:100%; margin-bottom:22px;
+}
+.class-btn{
+  background:var(--card); border:2.5px solid var(--ink); border-radius:var(--radius-md);
+  padding:16px 6px; font-size:17px; font-weight:800; color:var(--ink);
+  box-shadow:0 4px 0 var(--ink); cursor:pointer; transition:.1s;
+}
+.class-btn:active{transform:translateY(3px); box-shadow:0 1px 0 var(--ink);}
+.class-btn.selected{
+  background:var(--red); color:#fff; border-color:var(--ink); box-shadow:0 4px 0 var(--ink);
+}
+.name-input{
+  width:100%; padding:16px 18px; border-radius:var(--radius-md); border:2.5px solid var(--ink);
+  font-size:16px; background:var(--card); margin-bottom:18px; font-family:inherit;
+  outline:none;
+}
+.name-input:focus{border-color:var(--red);}
+.primary-btn{
+  width:100%; padding:16px; border:2.5px solid var(--ink); border-radius:99px;
+  background:var(--red); color:#fff; font-size:16px; font-weight:800;
+  box-shadow:0 4px 0 var(--ink); cursor:pointer; transition:.1s;
+}
+.primary-btn:active{transform:translateY(3px); box-shadow:0 1px 0 var(--ink);}
+.primary-btn:disabled{background:#e5decb; border-color:#cabf9f; color:#a99d80; box-shadow:0 4px 0 #cabf9f; cursor:not-allowed;}
+.ghost-btn{
+  width:100%; padding:14px; border:2.5px solid var(--ink); border-radius:99px;
+  background:var(--card); color:var(--ink); font-weight:800; font-size:14px; cursor:pointer; margin-top:10px;
+}
+
+/* ---------- Top bar ---------- */
+.topbar{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:18px 20px 8px;
+}
+.day-chip{
+  display:flex; align-items:center; gap:8px;
+  background:var(--red); color:#fff; padding:8px 16px; border-radius:99px;
+  font-weight:800; font-size:14px; letter-spacing:.5px;
+  border:2.5px solid var(--ink);
+}
+.day-chip .icon{width:18px; height:18px;}
+.profile-chip{
+  font-size:13px; color:var(--ink-soft); font-weight:600; text-align:right;
+}
+.profile-chip b{color:var(--ink); font-weight:800;}
+
+.content{padding:6px 18px 10px;}
+
+/* ---------- Progress hero card ---------- */
+.hero-card{
+  background:var(--mint-soft);
+  border:2.5px solid var(--ink);
+  border-radius:var(--radius-lg); padding:20px 20px 16px; box-shadow:0 5px 0 var(--ink);
+  margin-bottom:24px; position:relative;
+}
+.tag-chip{
+  position:absolute; top:-14px; left:16px;
+  background:var(--ink); color:#fff; font-size:11px; font-weight:800;
+  padding:5px 12px; border-radius:99px; letter-spacing:.5px;
+}
+.hero-top{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; margin-top:6px;}
+.hero-title{font-size:13px; font-weight:800; color:var(--ink); letter-spacing:.5px;}
+.hero-percent{font-size:26px; font-weight:800; color:var(--ink);}
+.bar-track{
+  width:100%; height:14px; background:#fff; border-radius:99px; overflow:hidden;
+  margin-bottom:10px; border:2px solid var(--ink);
+}
+.bar-fill{
+  height:100%; background:var(--mint);
+  border-radius:99px; transition:width .5s ease;
+}
+.mini-stats{display:flex; gap:8px; font-size:12px; font-weight:800; color:var(--ink); flex-wrap:wrap;}
+.mini-stat{background:#fff; border:2px solid var(--ink); padding:4px 10px; border-radius:99px;}
+
+/* ---------- Pet card ---------- */
+.pet-card{
+  background:var(--card); border:2.5px solid var(--ink); border-radius:var(--radius-lg); padding:18px;
+  box-shadow:0 5px 0 var(--ink); margin-bottom:24px;
+  display:flex; align-items:center; gap:16px; position:relative;
+}
+.pet-avatar{
+  width:66px; height:66px; border-radius:50%; background:var(--yellow);
+  border:2.5px solid var(--ink);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; margin-top:6px; padding:15px;
+}
+.pet-info{flex:1; margin-top:6px; min-width:0;}
+.pet-name-row{display:flex; align-items:center; gap:6px; margin-bottom:2px;}
+.pet-info .pet-name{font-size:15px; font-weight:800; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.pet-edit-btn{
+  background:none; border:none; padding:2px; cursor:pointer; color:var(--ink-soft); flex-shrink:0;
+  width:18px; height:18px;
+}
+.pet-info .pet-lv{font-size:12px; color:var(--ink-soft); margin-bottom:6px; font-weight:700;}
+.xp-track{width:100%; height:10px; background:var(--cream); border-radius:99px; overflow:hidden; border:2px solid var(--ink);}
+.xp-fill{height:100%; background:var(--yellow); border-radius:99px; transition:width .5s ease;}
+.xp-label{font-size:11px; color:var(--ink-soft); margin-top:4px; font-weight:700;}
+.today-xp-badge{
+  background:var(--yellow); color:var(--ink); font-weight:800; font-size:12px;
+  padding:6px 10px; border-radius:99px; white-space:nowrap; border:2px solid var(--ink);
+}
+
+/* ---------- Mission list ---------- */
+.section-label{font-size:13px; font-weight:800; color:var(--ink); margin:4px 2px 10px; letter-spacing:.3px;}
+.mission-list{display:flex; flex-direction:column; gap:10px; margin-bottom:22px;}
+.mission-item{
+  background:var(--card); border-radius:var(--radius-md); padding:14px 16px;
+  display:flex; align-items:center; gap:12px; box-shadow:0 4px 0 var(--ink); cursor:pointer;
+  border:2.5px solid var(--ink); transition:.1s;
+}
+.mission-item:active{ transform:translateY(3px); box-shadow:0 1px 0 var(--ink); }
+.mission-item.done{border-color:var(--ink); background:var(--mint-soft); box-shadow:0 4px 0 var(--ink);}
+.mission-item .check{
+  width:26px; height:26px; border-radius:50%; border:2px solid var(--ink);
+  display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; font-weight:900; color:#fff;
+  background:#fff;
+}
+.mission-item.done .check{background:var(--mint); border-color:var(--ink); color:var(--ink);}
+.mission-item .m-icon{width:22px; height:22px; flex-shrink:0; color:var(--ink);}
+.mission-item .m-text{flex:1; min-width:0;}
+.mission-item .m-title{font-size:14px; font-weight:800; color:var(--ink);}
+.mission-item .m-desc{font-size:11px; color:var(--ink-soft); margin-top:1px;}
+.mission-item .m-xp{font-size:12px; font-weight:800; color:var(--ink); flex-shrink:0;}
+
+/* ---------- Nav grid ---------- */
+.nav-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-bottom:10px;}
+.nav-card{
+  background:var(--card); border-radius:var(--radius-md); padding:18px 14px;
+  box-shadow:0 4px 0 var(--ink); text-align:left; cursor:pointer; border:2.5px solid var(--ink);
+  display:flex; flex-direction:column; gap:6px; font-family:inherit; transition:.1s;
+}
+.nav-card:active{ transform:translateY(3px); box-shadow:0 1px 0 var(--ink); }
+.nav-card .nav-icon{width:24px; height:24px; color:var(--ink);}
+.nav-card .nav-title{font-size:14px; font-weight:800; color:var(--ink);}
+.nav-card .nav-sub{font-size:11px; color:var(--ink-soft);}
+
+/* ---------- Bottom nav ---------- */
+.bottom-nav{
+  position:fixed; bottom:0; left:50%; transform:translateX(-50%);
+  width:100%; max-width:480px; background:#fff;
+  display:flex; justify-content:space-around; align-items:center;
+  padding:10px 6px calc(10px + env(safe-area-inset-bottom));
+  box-shadow:0 -3px 0 var(--ink); z-index:50;
+  border-top:2.5px solid var(--ink);
+}
+.bottom-nav button{
+  background:none; border:none; display:flex; flex-direction:column; align-items:center; gap:3px;
+  font-family:inherit; color:var(--ink-soft); font-size:10px; font-weight:700; cursor:pointer; padding:4px 8px;
+}
+.bottom-nav button .nav-icon{width:20px; height:20px;}
+.bottom-nav button.active{color:var(--red);}
+
+/* ---------- Page header ---------- */
+.page-header{display:flex; align-items:center; gap:10px; padding:16px 18px 4px;}
+.back-btn{
+  width:34px; height:34px; border-radius:50%; background:var(--card); border:2.5px solid var(--ink);
+  box-shadow:0 3px 0 var(--ink); cursor:pointer; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center; color:var(--ink);
+}
+.back-btn .icon{width:16px; height:16px;}
+.page-title{font-size:18px; font-weight:800; color:var(--ink); display:flex; align-items:center; gap:8px;}
+.page-title .icon{width:20px; height:20px;}
+
+/* ---------- Map ---------- */
+.map-group{margin-bottom:18px;}
+.map-group-title{font-size:13px; font-weight:800; color:var(--ink-soft); margin:6px 2px 8px;}
+.map-tiles{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
+.map-tile{
+  border-radius:var(--radius-md); padding:12px 6px; text-align:center;
+  box-shadow:0 3px 0 var(--ink); position:relative; border:2.5px solid var(--ink);
+}
+.map-tile .tile-badge{
+  width:14px; height:14px; border-radius:50%; margin:0 auto 6px; border:2px solid var(--ink);
+}
+.map-tile .tile-name{font-size:12px; font-weight:800; color:var(--ink);}
+.map-tile .tile-status{font-size:10px; font-weight:700; color:var(--ink-soft); margin-top:2px;}
+.tile-safe{background:var(--mint-soft);}
+.tile-safe .tile-badge{background:var(--mint);}
+.tile-warn{background:var(--yellow-soft);}
+.tile-warn .tile-badge{background:var(--yellow);}
+.tile-caution{background:var(--caution-soft);}
+.tile-caution .tile-badge{background:var(--caution);}
+.tile-danger{background:var(--red-soft);}
+.tile-danger .tile-badge{background:var(--red);}
+.tile-empty{background:var(--neutral-soft);}
+.tile-empty .tile-badge{background:#cabf9f;}
+
+.legend{display:flex; gap:10px; justify-content:center; margin:14px 0; flex-wrap:wrap;}
+.legend-item{display:flex; align-items:center; gap:5px; font-size:11px; font-weight:700; color:var(--ink-soft);}
+.legend-dot{width:10px; height:10px; border-radius:50%; border:2px solid var(--ink);}
+
+/* ---------- Report ---------- */
+.report-hero{
+  background:var(--card); border:2.5px solid var(--ink); border-radius:var(--radius-lg); padding:22px; box-shadow:0 5px 0 var(--ink); margin-bottom:22px; text-align:center;
+}
+.report-icon-wrap{
+  width:64px; height:64px; border-radius:50%; margin:0 auto 10px;
+  display:flex; align-items:center; justify-content:center; border:2.5px solid var(--ink);
+}
+.report-icon-wrap .icon{width:32px; height:32px;}
+.risk-num{font-size:34px; font-weight:800; margin:4px 0;}
+.risk-label{font-size:13px; font-weight:700; color:var(--ink-soft); margin-bottom:14px;}
+.risk-bar-track{width:100%; height:12px; background:var(--cream); border-radius:99px; overflow:hidden; border:2px solid var(--ink);}
+.risk-bar-fill{height:100%; border-radius:99px; transition:width .5s ease;}
+.recommend-list{display:flex; flex-direction:column; gap:8px; margin:16px 0;}
+.recommend-item{
+  background:var(--mint-soft); border:2px solid var(--ink); border-radius:var(--radius-sm); padding:10px 12px; font-size:12px; font-weight:700; color:var(--ink);
+  display:flex; align-items:center; gap:10px; text-align:left;
+}
+.recommend-item .icon{width:14px; height:14px; flex-shrink:0;}
+.mask-callout{
+  border-radius:var(--radius-md); padding:16px; margin-top:6px; text-align:center; border:2.5px solid var(--ink);
+}
+.mask-callout.high{background:var(--red-soft);}
+.mask-callout.low{background:var(--mint-soft);}
+.mask-callout .icon{width:30px; height:30px; margin:0 auto 6px;}
+.mask-callout p{font-size:13px; font-weight:700; margin:0 0 12px; color:var(--ink);}
+.report-note{font-size:11px; color:var(--ink-soft); text-align:center; margin-top:10px; line-height:1.5;}
+
+/* ---------- Log ---------- */
+.log-feed{display:flex; flex-direction:column; gap:0;}
+.log-item{
+  background:var(--card); border:2.5px solid var(--ink); border-radius:var(--radius-md); padding:14px 16px; box-shadow:0 3px 0 var(--ink);
+  display:flex; gap:12px; align-items:flex-start; margin-bottom:12px;
+}
+.log-item .icon{width:20px; height:20px; flex-shrink:0; margin-top:1px; color:var(--ink);}
+.log-text{flex:1; font-size:13px; color:var(--ink); line-height:1.5;}
+.log-text b{font-weight:800;}
+.log-time{font-size:10px; color:var(--ink-soft); margin-top:2px;}
+.log-xp{font-size:12px; font-weight:800; color:var(--ink);}
+.empty-log{text-align:center; padding:40px 20px; color:var(--ink-soft); font-size:13px;}
+.empty-log .icon{width:32px; height:32px; margin:0 auto 10px; color:var(--ink-soft);}
+
+/* ---------- Info modal ---------- */
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(43,35,32,0.5); z-index:100;
+  display:none; align-items:flex-end; justify-content:center;
+}
+.modal-overlay.active{display:flex;}
+.modal-sheet{
+  background:var(--cream); width:100%; max-width:480px; border-radius:24px 24px 0 0;
+  padding:24px 22px calc(24px + env(safe-area-inset-bottom)); max-height:80vh; overflow-y:auto;
+  animation:slideUp .25s ease; border-top:2.5px solid var(--ink);
+}
+@keyframes slideUp{from{transform:translateY(30px); opacity:0;} to{transform:translateY(0); opacity:1;}}
+.modal-sheet h3{margin:0 0 10px; font-size:18px; font-weight:800;}
+.modal-sheet p, .modal-sheet li{font-size:13px; color:var(--ink-soft); line-height:1.6;}
+.modal-close{
+  width:100%; padding:14px; border:2.5px solid var(--ink); border-radius:99px; background:var(--ink); color:#fff;
+  font-weight:800; margin-top:14px; cursor:pointer;
+}
+.modal-close.secondary{ background:var(--card); color:var(--ink); }
+.info-btn{
+  width:30px; height:30px; border-radius:50%; background:var(--card); border:2.5px solid var(--ink); box-shadow:0 3px 0 var(--ink);
+  font-size:13px; font-weight:800; color:var(--ink); cursor:pointer; margin-left:auto;
+  display:flex; align-items:center; justify-content:center;
+}
+.info-btn .icon{width:16px; height:16px;}
+
+.toast{
+  position:fixed; bottom:90px; left:50%; transform:translateX(-50%) translateY(20px);
+  background:var(--ink); color:#fff; padding:12px 22px; border-radius:99px; font-size:13px; font-weight:700;
+  box-shadow:0 5px 0 rgba(0,0,0,0.2); z-index:200; opacity:0; transition:.3s; pointer-events:none;
+}
+.toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+
+.pnm-input{
+  width:100%; padding:14px 16px; border-radius:var(--radius-md); border:2.5px solid var(--ink);
+  font-size:15px; background:var(--card); font-family:inherit; outline:none; margin-top:6px;
+}
+.pnm-input:focus{border-color:var(--red);}
+
+/* ---------- Health check form ---------- */
+.check-form-card{
+  background:var(--card); border:2.5px solid var(--ink); border-radius:var(--radius-lg);
+  padding:22px 20px; box-shadow:0 5px 0 var(--ink); margin-bottom:22px;
+}
+.form-question{margin-bottom:28px;}
+.form-question:last-of-type{margin-bottom:22px;}
+.form-q-header{display:flex; align-items:flex-start; gap:10px; margin-bottom:10px;}
+.form-q-num{
+  width:24px; height:24px; border-radius:8px; background:var(--red); color:#fff;
+  border:2px solid var(--ink); display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:900; flex-shrink:0; box-shadow:0 2px 0 var(--ink);
+}
+.form-q-title{margin:0; color:var(--ink); font-size:16px; line-height:1.35; font-weight:900;}
+.form-q-desc{margin:0 0 12px 34px; color:var(--ink-soft); font-size:12px; line-height:1.45; font-weight:700;}
+.form-options{display:flex; flex-direction:column; gap:10px;}
+.form-option-label{display:block; cursor:pointer;}
+.form-option-label input{position:absolute; opacity:0; pointer-events:none;}
+.opt-box{
+  display:flex; align-items:center; width:100%; gap:12px; padding:13px 14px;
+  background:var(--cream); border:2.5px solid var(--ink); border-radius:var(--radius-md);
+  box-shadow:0 3px 0 var(--ink); transition:.12s;
+}
+.form-option-label:active .opt-box{transform:translateY(2px); box-shadow:0 1px 0 var(--ink);}
+.opt-letter{
+  width:24px; height:24px; border-radius:50%; background:#fff; color:var(--ink);
+  border:2px solid var(--ink); display:flex; align-items:center; justify-content:center;
+  font-size:12px; font-weight:900; flex-shrink:0;
+}
+.opt-text{font-size:14px; font-weight:800; color:var(--ink); line-height:1.35;}
+.form-option-label input:checked + .opt-box{background:var(--mint-soft);}
+.form-option-label input:checked + .opt-box .opt-letter{background:var(--mint);}
+.check-form-actions{display:flex; gap:10px; flex-direction:column;}
+.check-form-hint{font-size:12px; line-height:1.5; color:var(--ink-soft); font-weight:700; margin:0 0 16px;}
+
+/* =========================================================
+   PAD / LAPTOP LAYOUT (min-width: 860px)
+   ========================================================= */
+@media (min-width: 860px){
+
+  body{ padding-left:108px; }
+
+  #app{
+    max-width:1180px;
+    padding-bottom:40px;
+  }
+
+  .bottom-nav{
+    left:0; top:0; bottom:auto; transform:none;
+    width:104px; max-width:104px; height:100vh;
+    flex-direction:column; justify-content:flex-start;
+    align-items:center; gap:26px;
+    padding:36px 8px 24px;
+    border-radius:0 28px 28px 0;
+    box-shadow:3px 0 0 var(--ink);
+    border-top:none; border-right:2.5px solid var(--ink);
+  }
+  .bottom-nav button{
+    font-size:11px; padding:10px 6px; border-radius:14px; width:100%;
+    transition:.15s;
+  }
+  .bottom-nav button .nav-icon{width:22px; height:22px;}
+  .bottom-nav button:hover{background:var(--cream); color:var(--red);}
+  .bottom-nav button.active{background:var(--red-soft); color:var(--red);}
+
+  .onboard{
+    min-height:calc(100vh - 40px);
+  }
+  .screen#screen-class .onboard,
+  .screen#screen-name .onboard{
+    background:var(--card); border:2.5px solid var(--ink); border-radius:28px; box-shadow:0 6px 0 var(--ink);
+    max-width:520px; margin:40px auto; padding:52px 48px; min-height:auto;
+  }
+  #classGrid{ grid-template-columns:repeat(6,1fr); }
+  #dormGrid{ grid-template-columns:repeat(5,1fr); }
+  #dormGrid .class-btn{ font-size:12px; padding:14px 4px; }
+
+  #screen-home .content{
+    display:grid;
+    grid-template-columns:1.15fr 0.85fr;
+    gap:20px 24px;
+    align-items:start;
+    padding-top:10px;
+  }
+  #screen-home .content > *:nth-child(1){ grid-column:1; grid-row:1; margin-bottom:0; }
+  #screen-home .content > *:nth-child(2){ grid-column:2; grid-row:1; margin-bottom:0; }
+  #screen-home .content > *:nth-child(3){ grid-column:1/-1; grid-row:2; }
+  #screen-home .content > *:nth-child(4){ grid-column:1/-1; grid-row:3; }
+  #screen-home .content > *:nth-child(5){ grid-column:1/-1; grid-row:4; }
+  #screen-home .content > *:nth-child(6){ grid-column:1/-1; grid-row:5; }
+
+  .mission-list{ flex-direction:row; flex-wrap:wrap; gap:14px; }
+  .mission-item{ flex:1 1 calc(33.333% - 10px); min-width:220px; }
+
+  .nav-grid{ grid-template-columns:repeat(4,1fr); }
+  .nav-card{ padding:22px 16px; }
+
+  .pet-card{ flex-direction:column; align-items:flex-start; text-align:left; }
+  .pet-card .pet-avatar{ width:56px; height:56px; margin-bottom:4px; padding:13px; }
+  .pet-card .today-xp-badge{ align-self:flex-end; margin-top:-38px; }
+
+  .topbar{ padding:8px 4px 4px; }
+
+  #screen-map .content{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:28px; align-items:start;
+  }
+  #screen-map .content .map-tiles{ grid-template-columns:repeat(2,1fr); }
+
+  #screen-report .content{
+    display:grid; grid-template-columns:1fr 1.1fr; gap:24px; align-items:start;
+  }
+  #screen-report .content > *:nth-child(1){ grid-column:1; grid-row:1/5; }
+  #screen-report .content > *:nth-child(2){ grid-column:2; grid-row:1; }
+  #screen-report .content > *:nth-child(3){ grid-column:2; grid-row:2; }
+  #screen-report .content > *:nth-child(4){ grid-column:2; grid-row:3; }
+  .report-hero{ height:100%; display:flex; flex-direction:column; justify-content:center; }
+
+  .log-feed{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; align-items:start; }
+
+  .modal-overlay{ align-items:center; }
+  .modal-sheet{
+    border-radius:24px; max-width:440px; width:90%;
+    max-height:70vh; border-top:2.5px solid var(--ink);
+  }
+
+  .page-header{ padding:10px 4px 4px; }
+}
+
+@media (min-width: 1180px){
+  body{ padding-left:120px; }
+  .bottom-nav{ width:116px; }
+}
+
+/* =========================================================
+   immune_camp.html UI tone override
+   ========================================================= */
+:root{
+  --ac-bg:#F0F5EB;
+  --ac-text:#6A564A;
+  --ac-text-soft:#A39185;
+  --ac-card:#FFFFFF;
+  --ac-card-shadow:#DFE5D8;
+  --ac-green:#83C174;
+  --ac-green-dark:#639C56;
+  --ac-green-soft:#E8F2E3;
+  --ac-wood:#D2A878;
+  --ac-wood-dark:#AF8556;
+  --ac-yellow:#F6D672;
+  --ac-yellow-dark:#DEBB50;
+  --ac-peach:#F29F8D;
+  --cream:var(--ac-bg);
+  --ink:var(--ac-text);
+  --ink-soft:var(--ac-text-soft);
+  --card:var(--ac-card);
+  --mint:var(--ac-green);
+  --mint-soft:var(--ac-green-soft);
+  --yellow:var(--ac-yellow);
+  --red:var(--ac-peach);
+  --radius-lg:32px;
+  --radius-md:22px;
+  --radius-sm:16px;
+}
+body{background:var(--ac-bg); color:var(--ac-text);}
+.screen{animation:popIn .4s cubic-bezier(0.175,0.885,0.32,1.275);}
+@keyframes popIn{from{opacity:0; transform:translateY(15px) scale(.97);} to{opacity:1; transform:translateY(0) scale(1);}}
+.onboard-badge,.day-chip{
+  background:var(--ac-wood); border:none; border-radius:14px; color:#fff;
+  box-shadow:0 4px 0 var(--ac-wood-dark);
+}
+.onboard-badge{transform:rotate(-3deg);}
+.onboard h1,.page-title,.section-label,.pet-info .pet-name{color:var(--ac-wood-dark); font-weight:900;}
+.primary-btn{
+  border:none; background:var(--ac-green); color:#fff; font-size:17px;
+  box-shadow:0 6px 0 var(--ac-green-dark);
+}
+.primary-btn:active{transform:translateY(4px); box-shadow:0 2px 0 var(--ac-green-dark);}
+.primary-btn:disabled{background:#D1D5CB; color:#A7ACA2; box-shadow:0 6px 0 #B5B9AF;}
+.ghost-btn,.class-btn,.back-btn,.info-btn,.nav-card,.hero-card,.pet-card,.mission-item,.report-hero,.log-item,.check-form-card{
+  border:none; box-shadow:0 6px 0 var(--ac-card-shadow);
+}
+.ghost-btn,.class-btn,.back-btn,.info-btn,.nav-card,.hero-card,.pet-card,.mission-item,.report-hero,.log-item,.check-form-card{
+  background:var(--ac-card);
+}
+.class-btn.selected{background:var(--ac-yellow); color:var(--ac-text); box-shadow:0 6px 0 var(--ac-yellow-dark);}
+.name-input,.pnm-input{
+  border:none; box-shadow:0 4px 0 var(--ac-card-shadow) inset; color:var(--ac-text); font-weight:700;
+}
+.name-input:focus,.pnm-input:focus{box-shadow:0 0 0 4px var(--ac-green-soft) inset, 0 4px 0 var(--ac-card-shadow) inset;}
+.tag-chip{
+  background:var(--ac-text); border:none; border-radius:12px;
+  box-shadow:0 3px 0 rgba(0,0,0,.18);
+}
+.hero-card,.pet-card,.report-hero{box-shadow:0 8px 0 var(--ac-card-shadow);}
+.hero-title{color:var(--ac-text-soft); font-weight:800;}
+.hero-percent,.risk-num{color:var(--ac-green-dark); font-weight:900;}
+.bar-track,.xp-track,.risk-bar-track{
+  border:none; background:var(--ac-bg); box-shadow:0 3px 0 var(--ac-card-shadow) inset;
+}
+.bar-fill,.risk-bar-fill{background:var(--ac-green);}
+.xp-fill{background:var(--ac-yellow);}
+.mini-stat{border:none; background:var(--ac-bg); color:var(--ac-text-soft);}
+.pet-avatar{
+  background:var(--ac-green-soft); border:none; box-shadow:0 4px 0 var(--ac-card-shadow) inset;
+}
+.today-xp-badge{
+  border:none; background:var(--ac-peach); color:#fff; border-radius:14px;
+  box-shadow:0 4px 0 #D67A66; transform:rotate(3deg);
+}
+.mission-item.done{background:var(--ac-green-soft); box-shadow:0 4px 0 var(--ac-card-shadow);}
+.mission-item .check{border:none; background:var(--ac-bg); box-shadow:0 3px 0 var(--ac-card-shadow) inset; color:transparent;}
+.mission-item.done .check{background:var(--ac-green); color:#fff; box-shadow:none;}
+.mission-item .m-xp,.log-xp{
+  color:var(--ac-wood-dark); background:var(--ac-yellow); padding:4px 10px; border-radius:10px;
+}
+.bottom-nav{
+  background:var(--ac-card); border:none; border-top-left-radius:24px; border-top-right-radius:24px;
+  box-shadow:0 -6px 20px rgba(106,86,74,.08);
+}
+.bottom-nav button.active{background:var(--ac-green-soft); color:var(--ac-green-dark);}
+.opt-box{background:var(--ac-bg); border:none; box-shadow:0 4px 0 var(--ac-card-shadow);}
+.form-option-label input:checked + .opt-box{background:var(--ac-green-soft);}
+.form-option-label input:checked + .opt-box .opt-letter{background:var(--ac-green); color:#fff;}
+.form-q-num{background:var(--ac-wood); border:none; box-shadow:0 3px 0 var(--ac-wood-dark);}
+.recommend-list{gap:6px; margin:12px 0;}
+.recommend-item{padding:9px 11px; font-size:12px; line-height:1.35; gap:8px;}
+.recommend-item .icon{width:14px; height:14px;}
+.toast{background:var(--ac-text); box-shadow:0 8px 20px rgba(0,0,0,.15);}
+.screen#screen-class.active,
+.screen#screen-name.active{
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+}
+.screen#screen-class .onboard,
+.screen#screen-name .onboard{
+  width:100%;
+  min-height:auto;
+}
+.condition-summary{
+  background:var(--ac-card);
+  border-radius:var(--radius-md);
+  padding:14px 16px;
+  box-shadow:0 4px 0 var(--ac-card-shadow);
+  color:var(--ac-text);
+  font-size:13px;
+  font-weight:800;
+  line-height:1.5;
+  margin-bottom:14px;
+}
+.condition-summary b{color:var(--ac-wood-dark);}
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ===================== ONBOARDING: CLASS ===================== -->
+  <div class="screen active" id="screen-class">
+    <div class="onboard">
+      <div class="onboard-badge">IMMUNE-CAMP</div>
+      <h1>어서오세요!</h1>
+      <p class="sub">어느 학급인가요?</p>
+      <div class="class-grid" id="classGrid"></div>
+      <div style="width:100%; margin-bottom:8px;">
+        <p class="sub" style="margin-bottom:10px;">기숙사는 어디인가요? (선택)</p>
+        <div class="class-grid" id="dormGrid" style="grid-template-columns:repeat(2,1fr);"></div>
+      </div>
+      <button class="primary-btn" id="toNameBtn" disabled>다음</button>
+    </div>
+  </div>
+
+  <!-- ===================== ONBOARDING: NAME ===================== -->
+  <div class="screen" id="screen-name">
+    <div class="onboard">
+      <div class="onboard-badge">마지막 단계</div>
+      <h1>이름을 알려주세요</h1>
+      <p class="sub">실천 로그에 표시돼요. (같은 반 친구들만 봐요!)</p>
+      <input type="text" class="name-input" id="nameInput" placeholder="예: 유하엘" maxlength="10">
+      <button class="primary-btn" id="startBtn" disabled>시작하기</button>
+      <button class="ghost-btn" id="backToClassBtn">뒤로</button>
+    </div>
+  </div>
+
+  <!-- ===================== HOME ===================== -->
+  <div class="screen" id="screen-home">
+    <div class="topbar">
+      <div class="day-chip"><span class="icon" id="dayIcon"></span><span id="dayLabel">DAY 1</span></div>
+      <div class="profile-chip"><b id="homeClassName">3-1</b><br><span id="homeUserName">유하엘</span>님</div>
+    </div>
+
+    <div class="content">
+      <div class="hero-card">
+        <div class="tag-chip">TODAY</div>
+        <div class="hero-top">
+          <div>
+            <div class="hero-title">오늘 우리 반 진행률</div>
+          </div>
+          <div class="hero-percent" id="progressPercent">0%</div>
+        </div>
+        <div class="bar-track"><div class="bar-fill" id="progressBar" style="width:0%"></div></div>
+        <div class="mini-stats">
+          <span class="mini-stat" id="checkStat">자가진단 0/30</span>
+          <span class="mini-stat" id="ventStat">환기 대기중</span>
+        </div>
+      </div>
+
+      <div class="pet-card">
+        <div class="tag-chip">PET</div>
+        <div class="pet-avatar" id="petAvatar"></div>
+        <div class="pet-info">
+          <div class="pet-name-row">
+            <div class="pet-name" id="petName">이름 없는 펫</div>
+            <button class="pet-edit-btn" id="petEditBtn" onclick="openPetNameModal()"></button>
+          </div>
+          <div class="pet-lv" id="petLv">LV.1</div>
+          <div class="xp-track"><div class="xp-fill" id="xpFill" style="width:0%"></div></div>
+          <div class="xp-label" id="xpLabel">XP 0 / 100</div>
+        </div>
+        <div class="today-xp-badge" id="todayXpBadge">+0 XP</div>
+      </div>
+
+      <div class="section-label">오늘의 미션</div>
+      <div class="mission-list">
+        <div class="mission-item" id="missionCheck">
+          <div class="check">✓</div>
+          <div class="m-icon" id="missionCheckIcon"></div>
+          <div class="m-text">
+            <div class="m-title">IMMUNE CHECK (자가진단)</div>
+            <div class="m-desc">오늘 컨디션을 알려주세요</div>
+          </div>
+          <div class="m-xp">+5</div>
+        </div>
+        <div class="mission-item" id="missionVent">
+          <div class="check">✓</div>
+          <div class="m-icon" id="missionVentIcon"></div>
+          <div class="m-text">
+            <div class="m-title">환기 (학급 공동 · 1일 1회)</div>
+            <div class="m-desc" id="ventDesc">우리 반 전체 미션이에요</div>
+          </div>
+          <div class="m-xp">+50</div>
+        </div>
+      </div>
+
+      <div class="section-label">바로가기</div>
+      <div class="nav-grid">
+        <button class="nav-card" onclick="showScreen('screen-map')">
+          <div class="nav-icon" id="navMapIcon"></div>
+          <div class="nav-title">IMMUNE MAP</div>
+          <div class="nav-sub">우리 학교 면역 지도</div>
+        </button>
+        <button class="nav-card" onclick="showScreen('screen-report')">
+          <div class="nav-icon" id="navReportIcon"></div>
+          <div class="nav-title">TODAY REPORT</div>
+          <div class="nav-sub">나의 맞춤 리포트</div>
+        </button>
+        <button class="nav-card" onclick="showScreen('screen-log')">
+          <div class="nav-icon" id="navLogIcon"></div>
+          <div class="nav-title">IMMUNE LOG</div>
+          <div class="nav-sub" id="logNavSub">3-1 실천 기록</div>
+        </button>
+        <button class="nav-card" onclick="openInfo('camp')">
+          <div class="nav-icon" id="navInfoIcon"></div>
+          <div class="nav-title">INFO</div>
+          <div class="nav-sub">프로젝트 안내</div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== CHECK ===================== -->
+  <div class="screen" id="screen-check">
+    <div class="page-header">
+      <button class="back-btn" onclick="showScreen('screen-home')"><span class="icon" id="backIconCheck"></span></button>
+      <div class="page-title">IMMUNE CHECK</div>
+      <button class="info-btn" onclick="openInfo('check')"><span class="icon" id="infoIconCheck"></span></button>
+    </div>
+
+    <div class="content">
+      <form id="healthForm" class="check-form-card" onsubmit="event.preventDefault(); submitCheckForm();">
+        <p class="check-form-hint">오늘 컨디션을 체크하면 Google 스프레드시트에 기록되고, 우리 반 XP에 바로 반영돼요.</p>
+
+        <div class="form-question">
+          <div class="form-q-header">
+            <div class="form-q-num">1</div>
+            <h3 class="form-q-title">오늘의 몸 상태는 어떤가요?</h3>
+          </div>
+          <div class="form-options">
+            <label class="form-option-label">
+              <input type="radio" name="q1_status" value="매우 좋음" required>
+              <div class="opt-box"><div class="opt-letter">A</div><div class="opt-text">매우 좋아요</div></div>
+            </label>
+            <label class="form-option-label">
+              <input type="radio" name="q1_status" value="괜찮음">
+              <div class="opt-box"><div class="opt-letter">B</div><div class="opt-text">괜찮아요</div></div>
+            </label>
+            <label class="form-option-label">
+              <input type="radio" name="q1_status" value="조금 피곤함">
+              <div class="opt-box"><div class="opt-letter">C</div><div class="opt-text">조금 피곤해요</div></div>
+            </label>
+            <label class="form-option-label">
+              <input type="radio" name="q1_status" value="몸이 좋지 않음">
+              <div class="opt-box"><div class="opt-letter">D</div><div class="opt-text">몸이 좋지 않아요</div></div>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-question">
+          <div class="form-q-header">
+            <div class="form-q-num">2</div>
+            <h3 class="form-q-title">현재 해당되는 증상을 모두 선택해주세요.</h3>
+          </div>
+          <div class="form-q-desc">증상이 없다면 '없음'만 선택해주세요.</div>
+          <div class="form-options" id="q2Container">
+            <label class="form-option-label">
+              <input type="checkbox" name="q2_symptoms" value="없음" onchange="handleSymptomChange(this)">
+              <div class="opt-box"><div class="opt-letter">A</div><div class="opt-text">없음</div></div>
+            </label>
+            <label class="form-option-label">
+              <input type="checkbox" name="q2_symptoms" value="두통" onchange="handleSymptomChange(this)">
+              <div class="opt-box"><div class="opt-letter">B</div><div class="opt-text">두통</div></div>
+            </label>
+            <label class="form-option-label">
+              <input type="checkbox" name="q2_symptoms" value="기침" onchange="handleSymptomChange(this)">
+              <div class="opt-box"><div class="opt-letter">C</div><div class="opt-text">기침</div></div>
+            </label>
+            <label class="form-option-label">
+              <input type="checkbox" name="q2_symptoms" value="콧물" onchange="handleSymptomChange(this)">
+              <div class="opt-box"><div class="opt-letter">D</div><div class="opt-text">콧물</div></div>
+            </label>
+            <label class="form-option-label">
+              <input type="checkbox" name="q2_symptoms" value="인후통" onchange="handleSymptomChange(this)">
+              <div class="opt-box"><div class="opt-letter">E</div><div class="opt-text">인후통</div></div>
+            </label>
+            <label class="form-option-label">
+              <input type="checkbox" name="q2_symptoms" value="미열" onchange="handleSymptomChange(this)">
+              <div class="opt-box"><div class="opt-letter">F</div><div class="opt-text">미열</div></div>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-question">
+          <div class="form-q-header">
+            <div class="form-q-num">3</div>
+            <h3 class="form-q-title">어젯밤 수면시간은?</h3>
+          </div>
+          <div class="form-options">
+            <label class="form-option-label">
+              <input type="radio" name="q3_sleep" value="7시간 이상" required>
+              <div class="opt-box"><div class="opt-letter">A</div><div class="opt-text">7시간 이상</div></div>
+            </label>
+            <label class="form-option-label">
+              <input type="radio" name="q3_sleep" value="5~7시간">
+              <div class="opt-box"><div class="opt-letter">B</div><div class="opt-text">5~7시간</div></div>
+            </label>
+            <label class="form-option-label">
+              <input type="radio" name="q3_sleep" value="5시간 미만">
+              <div class="opt-box"><div class="opt-letter">C</div><div class="opt-text">5시간 미만</div></div>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-question">
+          <div class="form-q-header">
+            <div class="form-q-num">4</div>
+            <h3 class="form-q-title">오늘 물을 충분히 마셨나요?</h3>
+          </div>
+          <div class="form-options">
+            <label class="form-option-label">
+              <input type="radio" name="q4_water" value="충분히 마심" required>
+              <div class="opt-box"><div class="opt-letter">A</div><div class="opt-text">충분히 마셨어요</div></div>
+            </label>
+            <label class="form-option-label">
+              <input type="radio" name="q4_water" value="보통">
+              <div class="opt-box"><div class="opt-letter">B</div><div class="opt-text">보통이에요</div></div>
+            </label>
+            <label class="form-option-label">
+              <input type="radio" name="q4_water" value="거의 못 마심">
+              <div class="opt-box"><div class="opt-letter">C</div><div class="opt-text">거의 못 마셨어요</div></div>
+            </label>
+          </div>
+        </div>
+
+        <div class="check-form-actions">
+          <button type="submit" class="primary-btn" id="submitFormBtn">제출하고 +5 XP 받기</button>
+          <button type="button" class="ghost-btn" onclick="showScreen('screen-home')">나중에 하기</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================== MAP ===================== -->
+  <div class="screen" id="screen-map">
+    <div class="page-header">
+      <button class="back-btn" onclick="showScreen('screen-home')"><span class="icon" id="backIconMap"></span></button>
+      <div class="page-title"><span class="icon" id="titleIconMap"></span>IMMUNE MAP</div>
+      <button class="info-btn" onclick="openInfo('map')"><span class="icon" id="infoIconMap"></span></button>
+    </div>
+    <div class="content">
+      <div class="legend">
+        <div class="legend-item"><span class="legend-dot" style="background:var(--mint);"></span>안전</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--yellow);"></span>주의</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--caution);"></span>경계</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--red);"></span>위험</div>
+      </div>
+
+      <div class="map-group">
+        <div class="map-group-title">교실 · 2층</div>
+        <div class="map-tiles" id="mapClassUpper"></div>
+      </div>
+      <div class="map-group">
+        <div class="map-group-title">교실 · 1층</div>
+        <div class="map-tiles" id="mapClassLower"></div>
+      </div>
+      <div class="map-group">
+        <div class="map-group-title">기숙사</div>
+        <div class="map-tiles" id="mapDorm"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== REPORT ===================== -->
+  <div class="screen" id="screen-report">
+    <div class="page-header">
+      <button class="back-btn" onclick="showScreen('screen-home')"><span class="icon" id="backIconReport"></span></button>
+      <div class="page-title"><span class="icon" id="titleIconReport"></span>TODAY REPORT</div>
+      <button class="info-btn" onclick="openInfo('report')"><span class="icon" id="infoIconReport"></span></button>
+    </div>
+    <div class="content">
+      <div class="report-hero">
+        <div class="report-icon-wrap" id="reportIconWrap"></div>
+        <div class="risk-label">우리 반 오늘 감염 취약도</div>
+        <div class="risk-num" id="riskNum">—</div>
+        <div class="risk-bar-track"><div class="risk-bar-fill" id="riskBar" style="width:0%"></div></div>
+        <div class="report-note">자가진단 컨디션 평균과 환기 여부를 종합한 값이에요</div>
+      </div>
+
+      <div class="section-label">오늘의 추천</div>
+      <div class="recommend-list" id="recommendList"></div>
+
+      <div class="mask-callout low" id="maskCallout">
+        <div class="icon" id="maskCalloutIcon"></div>
+        <p id="maskCalloutText">오늘도 예방을 위해 착용하면 좋아요!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== LOG ===================== -->
+  <div class="screen" id="screen-log">
+    <div class="page-header">
+      <button class="back-btn" onclick="showScreen('screen-home')"><span class="icon" id="backIconLog"></span></button>
+      <div class="page-title" id="logTitle"><span class="icon" id="titleIconLog"></span>3-1 TODAY</div>
+      <button class="info-btn" onclick="openInfo('log')"><span class="icon" id="infoIconLog"></span></button>
+    </div>
+    <div class="content">
+      <div class="log-feed" id="logFeed"></div>
+    </div>
+  </div>
+
+  <!-- ===================== BOTTOM NAV ===================== -->
+  <div class="bottom-nav" id="bottomNav" style="display:none;">
+    <button onclick="showScreen('screen-home')" data-screen="screen-home"><span class="nav-icon" id="bnHome"></span>홈</button>
+    <button onclick="showScreen('screen-check')" data-screen="screen-check"><span class="nav-icon" id="bnCheck"></span>체크</button>
+    <button onclick="showScreen('screen-map')" data-screen="screen-map"><span class="nav-icon" id="bnMap"></span>맵</button>
+    <button onclick="showScreen('screen-report')" data-screen="screen-report"><span class="nav-icon" id="bnReport"></span>리포트</button>
+    <button onclick="showScreen('screen-log')" data-screen="screen-log"><span class="nav-icon" id="bnLog"></span>로그</button>
+  </div>
+
+  <!-- ===================== INFO MODAL ===================== -->
+  <div class="modal-overlay" id="infoModal" onclick="closeInfoOnOverlay(event)">
+    <div class="modal-sheet">
+      <h3 id="infoTitle">안내</h3>
+      <div id="infoBody"></div>
+      <button class="modal-close" onclick="closeInfo()">확인했어요</button>
+    </div>
+  </div>
+
+  <!-- ===================== PET NAME MODAL ===================== -->
+  <div class="modal-overlay" id="petNameModal">
+    <div class="modal-sheet">
+      <h3>펫 이름 정하기</h3>
+      <p>우리 반 펫의 이름이에요. 언제든 다시 바꿀 수 있어요.</p>
+      <input type="text" class="pnm-input" id="petNameInput" placeholder="예: 콩이" maxlength="10">
+      <button class="modal-close" onclick="savePetNameFromModal()">저장하기</button>
+      <button class="modal-close secondary" onclick="closePetNameModal()">취소</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <div class="modal-overlay" id="setupModal">
+    <div class="modal-sheet">
+      <h3>데이터 저장소 연결이 필요해요</h3>
+      <p>지금은 <b>CONFIG.SCRIPT_URL</b> 이 비어 있어서 기기 안에만 저장되는 데모 모드로 실행돼요.</p>
+      <p>친구들 데이터를 구글 시트로 모으려면 immune-camp.html 파일 맨 위쪽 스크립트에서<br>
+      <code>SCRIPT_URL: ""</code> 부분에 배포한 Apps Script 웹 앱 주소를 붙여넣고 다시 열어주세요.</p>
+      <button class="modal-close" onclick="document.getElementById('setupModal').classList.remove('active')">데모로 계속 진행</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ================= ICONS (no emoji, inline SVG) ================= */
+const ICONS = {
+  home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg>',
+  clipboard: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="M9 12l2 2 4-4"/></svg>',
+  mask: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10c0-2 2-4 8-4s8 2 8 4-2 7-8 7-8-5-8-7Z"/><path d="M2 9c1-1 2-1 3 0"/><path d="M22 9c-1-1-2-1-3 0"/></svg>',
+  wind: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h11a3 3 0 1 0-3-3"/><path d="M3 12h15a3 3 0 1 1-3 3"/><path d="M3 16h9"/></svg>',
+  mapPin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg>',
+  chart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10"/><path d="M12 20V4"/><path d="M20 20v-6"/></svg>',
+  feed: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10"/><path d="M7 12h10"/><path d="M7 16h6"/></svg>',
+  info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><circle cx="12" cy="7.5" r="0.9" fill="currentColor" stroke="none"/></svg>',
+  back: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',
+  pet: '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="7" cy="8" r="2"/><circle cx="12" cy="6" r="2"/><circle cx="17" cy="8" r="2"/><path d="M12 12c-4 0-6 2.2-6 4.6C6 19 8 20 12 20s6-1 6-3.4C18 14.2 16 12 12 12Z"/></svg>',
+  edit: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
+  seed: '<svg viewBox="0 0 24 24" fill="currentColor"><ellipse cx="12" cy="12" rx="5" ry="7"/></svg>',
+  sprout: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-8"/><path d="M12 13c0-4 3-6 6-6 0 4-3 6-6 6Z"/><path d="M12 13c0-3-2.5-5-5-5 0 3 2.5 5 5 5Z"/></svg>',
+  flower: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="2.1"/><circle cx="8" cy="11" r="2.1"/><circle cx="16" cy="11" r="2.1"/><circle cx="10" cy="15" r="2.1"/><circle cx="14" cy="15" r="2.1"/><path d="M12 15v6"/></svg>',
+  apple: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8c-4 0-6 3-6 6.5S8 20 12 20s6-2 6-5.5S16 8 12 8Z"/><path d="M12 8V5"/><path d="M12 5c1-1.5 3-1 3-1"/></svg>',
+  flag: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V4"/><path d="M6 5h12l-2.5 3.5L18 12H6"/></svg>',
+  droplet: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11Z"/></svg>',
+  moon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"/></svg>',
+  shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3Z"/></svg>',
+};
+function iconHtml(name){ return ICONS[name] || ''; }
+function mountIcon(id, name){ const el = document.getElementById(id); if(el) el.innerHTML = iconHtml(name); }
+
+/* ================= DATA ================= */
+const CLASSES = ["3-1","3-2","3-3","3-4","3-5","3-6"];
+const DORMS = ["봉황관 2층","봉황관 3층","우정학사 2층","우정학사 3층","기숙사 없음"];
+const DORM_SHORT = {"봉황관 2층":"봉황2","봉황관 3층":"봉황3","우정학사 2층":"우정2","우정학사 3층":"우정3","기숙사 없음":"—"};
+const ROSTER_PER_CLASS = 30;
+const ROSTER_PER_DORM = 20;
+
+const DAY_STAGES = [
+  {day:1, icon:"seed", label:"씨앗 심기"},
+  {day:2, icon:"sprout", label:"새싹 자라기"},
+  {day:3, icon:"flower", label:"꽃 피우기"},
+  {day:4, icon:"apple", label:"열매 맺기"},
+  {day:5, icon:"flag", label:"축제"},
+];
+/* ================= INFO TEXT ================= */
+const INFO_TEXT = {
+  camp: {
+    title:"IMMUNE-CAMP 안내",
+    body:`<p>2026.7.13 ~ 7.17, 5일간 진행되는 학년 전체 면역 캠프예요.</p>
+    <p>매일 자가진단과 학급 공동 환기를 실천하면 우리 반 펫이 성장하고, 학급 XP 랭킹에 반영돼요.</p>
+    <p>최종 XP가 가장 높은 학급에게는 상품이 준비되어 있어요.</p>`
+  },
+  check: {
+    title:"IMMUNE CHECK란?",
+    body:`<p>이름 · 반 · 기숙사 · 오늘 컨디션 · 증상 · 수면 · 수분 상태를 2분 안에 입력하는 개인 자가진단이에요.</p>
+    <p>제출하면 참여 완료로 기록되고, IMMUNE MAP과 리포트에 참여율로 반영돼요.</p>`
+  },
+  map: {
+    title:"IMMUNE MAP이란?",
+    body:`<p>학급 및 기숙사별 오늘의 참여 현황을 색깔로 보여주는 지도예요.</p>
+    <p>참여자의 컨디션 위험도와 환기 여부를 종합해서 계산해요. 아직 자가진단 기록이 없는 곳은 회색으로 표시돼요.</p>`
+  },
+  report: {
+    title:"TODAY REPORT란?",
+    body:`<p>우리 반의 오늘 컨디션 평균 위험도와 환기 여부를 종합한 값이에요. 자체 자가진단 폼 답변은 Google 스프레드시트에 함께 저장돼요.</p>
+    <p>마스크는 XP 미션이 아니라, 위험도와 증상 흐름에 따라 리포트에서 권고로만 안내돼요.</p>`
+  },
+  log: {
+    title:"IMMUNE LOG란?",
+    body:`<p>우리 반 친구들의 실천이 실시간으로 쌓이는 피드예요. 다른 학급의 로그는 보이지 않아요.</p>
+    <p>환기는 학급 공동 미션이라 하루에 한 번, 누군가 완료하면 반 전체에 반영돼요.</p>`
+  }
+};
+
+/* ================= BACKEND CONFIG ================= */
+const CONFIG = {
+  SCRIPT_URL: "https://script.google.com/macros/s/AKfycbzl44uiDXmdE1hz2rWFp6okbR7N5H_qEON7V--rQK_rO2bEstW4rklIyCj1u5PET0k1RA/exec"
+};
+const SHEET_MODE = CONFIG.SCRIPT_URL.trim().length > 0;
+
+/* ================= NORMALIZATION ================= 
+   시트 헤더의 대소문자/공백이 달라도 깨지지 않도록 키를 표준화 */
+function normalizeLogs(rows){
+  if(rows && !Array.isArray(rows)){
+    rows = rows.data || rows.rows || rows.logs || rows.items || [];
+  }
+  return (rows || []).map(r=>{
+    const keys = Object.keys(r || {});
+    const normalizeKey = (key)=> key.toString().toLowerCase().replace(/[\s_-]/g,'');
+    const get = (name)=>{
+      const wanted = normalizeKey(name);
+      const k = keys.find(k => normalizeKey(k) === wanted);
+      return k !== undefined ? r[k] : undefined;
+    };
+    const xpRaw = get('xp');
+    const dayRaw = get('day');
+    return {
+      timestamp: get('timestamp') || '',
+      day: parseInt(dayRaw, 10) || 1,
+      className: (get('classname') ?? get('class') ?? get('classroom') ?? '').toString().trim(),
+      dorm: (get('dorm') ?? '').toString().trim(),
+      userName: (get('username') ?? get('user') ?? get('name') ?? '').toString().trim(),
+      type: (get('type') ?? '').toString().trim(),
+      xp: parseInt(xpRaw, 10) || 0,
+      mood: (get('mood') ?? '').toString(),
+      risk: get('risk') ?? '',
+      q1_status: (get('q1_status') ?? '').toString(),
+      q2_symptoms: (get('q2_symptoms') ?? '').toString(),
+      q3_sleep: (get('q3_sleep') ?? '').toString(),
+      q4_water: (get('q4_water') ?? '').toString(),
+      answers: get('answers') ?? ''
+    };
+  });
+}
+function logTs(l){ const t = new Date(l.timestamp).getTime(); return isNaN(t) ? 0 : t; }
+function logIdentity(l){
+  return [l.day, l.className, l.dorm, l.userName, l.type, l.xp, l.mood, l.answers].join('|');
+}
+
+/* ================= REMOTE API (전체 시트 조회) ================= */
+const api = {
+  async fetchAll(){
+    const url = CONFIG.SCRIPT_URL + '?_=' + Date.now();
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('fetch failed');
+    return await res.json();
+  },
+  async postLog(payload){
+    const res = await fetch(CONFIG.SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+    if(!res.ok) throw new Error('post failed');
+    return await res.json();
+  }
+};
+
+/* ================= LOCAL FALLBACK (데모 모드) ================= */
+const localApi = {
+  key(){ return 'immunecamp_localsheet_all'; },
+  load(){
+    let d = [];
+    try{ d = JSON.parse(localStorage.getItem(this.key())) || []; }catch(e){}
+    return d;
+  },
+  save(rows){ localStorage.setItem(this.key(), JSON.stringify(rows)); },
+  async fetchAll(){ return this.load(); },
+  async postLog(payload){
+    const rows = this.load();
+    rows.unshift({ ...payload, timestamp: new Date().toISOString() });
+    this.save(rows);
+    return { status:'ok' };
+  }
+};
+
+const backend = SHEET_MODE ? api : localApi;
+const REMOTE_CACHE_KEY = 'immunecamp_remote_cache';
+
+/* ================= STATE ================= */
+function loadState(){
+  let s = null;
+  try{ s = JSON.parse(localStorage.getItem('immunecamp_state')); }catch(e){}
+  if(!s){ s = { className:null, dorm:null, userName:null, day:1 }; }
+  return s;
+}
+function saveState(){ localStorage.setItem('immunecamp_state', JSON.stringify(state)); }
+
+let state = loadState();
+let tempClass = null, tempDorm = null;
+let allLogs = []; // 전체 학급/전체 일차 로그 (정규화됨)
+let pendingLogs = []; // 아직 원격 연동이 완전히 검증되지 않은 최근 생성 로그 보존용 임시 배열
+let pollTimer = null;
+
+/* ================= DERIVED STATE HELPERS ================= */
+function logsForClass(cls){ return allLogs.filter(l => l.className === cls); }
+function todaysLogsForClass(cls){ return logsForClass(cls).filter(l => l.day === state.day); }
+function todaysLogsForDorm(dormName){ return allLogs.filter(l => l.day === state.day && l.dorm === dormName); }
+function todaysLogs(){ return todaysLogsForClass(state.className); }
+function myTodayLogs(type){ return todaysLogs().filter(l => l.userName === state.userName && l.type === type); }
+
+function classXPTotal(cls){ cls = cls || state.className; return logsForClass(cls).reduce((s,l)=> s + (l.xp||0), 0); }
+function checkedUsersToday(cls){ cls = cls || state.className; return [...new Set(todaysLogsForClass(cls).filter(l=>l.type==='check').map(l=>l.userName))]; }
+function maskedUsersToday(cls){ cls = cls || state.className; return [...new Set(todaysLogsForClass(cls).filter(l=>l.type==='mask').map(l=>l.userName))]; }
+function ventLogToday(cls){
+  cls = cls || state.className;
+  const vents = todaysLogsForClass(cls).filter(l=>l.type==='vent').sort((a,b)=>logTs(a)-logTs(b));
+  return vents.length ? vents[0] : null;
+}
+function petName(cls){
+  cls = cls || state.className;
+  const entries = logsForClass(cls).filter(l=>l.type==='petname').sort((a,b)=>logTs(b)-logTs(a));
+  return entries.length ? entries[0].mood.trim() : '';
+}
+
+function latestChecksByUser(cls){
+  cls = cls || state.className;
+  const checks = todaysLogsForClass(cls)
+    .filter(l=>l.type==='check')
+    .sort((a,b)=>logTs(b)-logTs(a));
+  const latest = new Map();
+  checks.forEach(log=>{
+    if(log.userName && !latest.has(log.userName)) latest.set(log.userName, log);
+  });
+  return [...latest.values()];
+}
+
+function parseAnswers(log){
+  let parsed = {};
+  if(log.answers){
+    try{ parsed = typeof log.answers === 'string' ? JSON.parse(log.answers) : log.answers; }catch(e){}
+  }
+  const symptomsRaw = log.q2_symptoms || parsed.q2_symptoms || parsed.symptoms || [];
+  const symptoms = Array.isArray(symptomsRaw)
+    ? symptomsRaw
+    : symptomsRaw.toString().split(',').map(s=>s.trim()).filter(Boolean);
+  return {
+    status: log.q1_status || parsed.q1_status || parsed.status || log.mood || '',
+    symptoms,
+    sleep: log.q3_sleep || parsed.q3_sleep || parsed.sleep || '',
+    water: log.q4_water || parsed.q4_water || parsed.water || ''
+  };
+}
+
+function conditionRiskFromCheck(log){
+  const a = parseAnswers(log);
+  const symptoms = a.symptoms.filter(s=>s && s !== '없음');
+  let bodyRisk = 25;
+  if(a.status.includes('매우')) bodyRisk = 5;
+  else if(a.status.includes('괜찮')) bodyRisk = 20;
+  else if(a.status.includes('피곤')) bodyRisk = 55;
+  else if(a.status.includes('좋지')) bodyRisk = 85;
+
+  let symptomRisk = 0;
+  if(symptoms.length === 1) symptomRisk = 35;
+  else if(symptoms.length === 2) symptomRisk = 60;
+  else if(symptoms.length >= 3) symptomRisk = 85;
+
+  let sleepRisk = 20;
+  if(a.sleep.includes('7시간 이상')) sleepRisk = 5;
+  else if(a.sleep.includes('5~7')) sleepRisk = 35;
+  else if(a.sleep.includes('5시간 미만')) sleepRisk = 75;
+
+  let waterRisk = 15;
+  if(a.water.includes('충분')) waterRisk = 5;
+  else if(a.water.includes('보통')) waterRisk = 25;
+  else if(a.water.includes('거의')) waterRisk = 60;
+
+  const score = bodyRisk * 0.4 + symptomRisk * 0.35 + sleepRisk * 0.2 + waterRisk * 0.05;
+  return Math.max(5, Math.min(95, Math.round(score)));
+}
+
+function classConditionSummary(cls){
+  cls = cls || state.className;
+  const checks = latestChecksByUser(cls);
+  if(!checks.length) return null;
+
+  const risks = checks.map(conditionRiskFromCheck);
+  const avgCondition = Math.round(risks.reduce((s,v)=>s+v,0) / risks.length);
+  const symptomCounts = {};
+  checks.forEach(log=>{
+    parseAnswers(log).symptoms
+      .filter(s=>s && s !== '없음')
+      .forEach(s=>{ symptomCounts[s] = (symptomCounts[s] || 0) + 1; });
+  });
+  const topSymptoms = Object.entries(symptomCounts)
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0,3)
+    .map(([name,count])=>({name,count}));
+
+  return {
+    checks,
+    participants: checks.length,
+    avgCondition,
+    topSymptoms,
+    tiredCount: checks.filter(log=>parseAnswers(log).status.includes('피곤') || parseAnswers(log).sleep.includes('5시간 미만')).length,
+    lowWaterCount: checks.filter(log=>parseAnswers(log).water.includes('거의')).length
+  };
+}
+
+/* ---- 컨디션 기반 취약도 계산 (참여 인원수 제외, 개별 컨디션 평균 + 마스크 + 환기) ---- */
+function classVulnerability(cls){
+  cls = cls || state.className;
+  const summary = classConditionSummary(cls);
+  if(!summary) return null;
+  const checked = summary.participants;
+  const masked = maskedUsersToday(cls).filter(name => summary.checks.some(log=>log.userName===name)).length;
+  const vented = !!ventLogToday(cls);
+  const maskCoverage = checked ? masked / checked : 0;
+  let score = summary.avgCondition;
+  score -= maskCoverage * 12;
+  score -= vented ? 8 : 0;
+  return Math.max(5, Math.min(95, Math.round(score)));
+}
+function dormVulnerability(dormName){
+  const logs = todaysLogsForDorm(dormName).filter(l=>l.type==='check');
+  const checkedCount = new Set(logs.map(l=>l.userName)).size;
+  if(checkedCount === 0) return null;
+  let score = 65 - (checkedCount / ROSTER_PER_DORM) * 40;
+  return Math.max(10, Math.min(90, Math.round(score)));
+}
+function tierFromScore(score){
+  if(score === null || score === undefined) return -1;
+  if(score <= 30) return 0;
+  if(score <= 50) return 1;
+  if(score <= 70) return 2;
+  return 3;
+}
+
+/* ================= ONBOARDING ================= */
+const classGrid = document.getElementById('classGrid');
+CLASSES.forEach(c=>{
+  const btn = document.createElement('button');
+  btn.className='class-btn'; btn.textContent=c;
+  btn.onclick = ()=>{
+    document.querySelectorAll('#classGrid .class-btn').forEach(b=>b.classList.remove('selected'));
+    btn.classList.add('selected');
+    tempClass = c;
+    updateToNameBtn();
+  };
+  classGrid.appendChild(btn);
+});
+
+const dormGrid = document.getElementById('dormGrid');
+DORMS.forEach(d=>{
+  const btn = document.createElement('button');
+  btn.className='class-btn'; btn.style.fontSize='13px'; btn.textContent=d;
+  btn.onclick = ()=>{
+    document.querySelectorAll('#dormGrid .class-btn').forEach(b=>b.classList.remove('selected'));
+    btn.classList.add('selected');
+    tempDorm = d;
+  };
+  dormGrid.appendChild(btn);
+});
+
+function updateToNameBtn(){
+  document.getElementById('toNameBtn').disabled = !tempClass;
+}
+
+document.getElementById('toNameBtn').onclick = ()=>{
+  state.className = tempClass;
+  state.dorm = tempDorm || "기숙사 없음";
+  showScreen('screen-name');
+};
+document.getElementById('backToClassBtn').onclick = ()=> showScreen('screen-class');
+
+const nameInput = document.getElementById('nameInput');
+nameInput.addEventListener('input', ()=>{
+  document.getElementById('startBtn').disabled = nameInput.value.trim().length===0;
+});
+document.getElementById('startBtn').onclick = async ()=>{
+  state.userName = nameInput.value.trim();
+  saveState();
+  await enterApp();
+};
+
+/* ================= SCREEN NAV ================= */
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.bottom-nav button').forEach(b=>{
+    b.classList.toggle('active', b.dataset.screen===id);
+  });
+  if(id==='screen-map') renderMap();
+  if(id==='screen-report') renderReport();
+  if(id==='screen-log') renderLog();
+  if(id==='screen-home') renderHome();
+  window.scrollTo(0,0);
+}
+
+/* ================= APP ENTRY ================= */
+function mountStaticIcons(){
+  mountIcon('backIconCheck','back'); mountIcon('infoIconCheck','info');
+  mountIcon('backIconMap','back'); mountIcon('titleIconMap','mapPin'); mountIcon('infoIconMap','info');
+  mountIcon('backIconReport','back'); mountIcon('titleIconReport','chart'); mountIcon('infoIconReport','info');
+  mountIcon('backIconLog','back'); mountIcon('titleIconLog','feed'); mountIcon('infoIconLog','info');
+  mountIcon('bnHome','home'); mountIcon('bnCheck','clipboard'); mountIcon('bnMap','mapPin'); mountIcon('bnReport','chart'); mountIcon('bnLog','feed');
+  mountIcon('navMapIcon','mapPin'); mountIcon('navReportIcon','chart'); mountIcon('navLogIcon','feed'); mountIcon('navInfoIcon','info');
+  mountIcon('missionCheckIcon','clipboard'); mountIcon('missionVentIcon','wind');
+  mountIcon('petEditBtn','edit'); mountIcon('petAvatar','pet');
+}
+mountStaticIcons();
+
+async function enterApp(){
+  document.getElementById('bottomNav').style.display='flex';
+  document.getElementById('homeClassName').textContent = state.className;
+  document.getElementById('homeUserName').textContent = state.userName;
+  if(!SHEET_MODE){
+    document.getElementById('setupModal').classList.add('active');
+  }
+  showScreen('screen-home');
+  await refreshData();
+  startPolling();
+}
+
+async function refreshData(){
+  try{
+    const raw = await backend.fetchAll();
+    const remoteLogs = normalizeLogs(raw);
+    
+    // 원격에서 받아온 데이터가 정상적인 배열일 때만 캐싱 및 병합을 실행합니다.
+    if (Array.isArray(remoteLogs)) {
+      localStorage.setItem(REMOTE_CACHE_KEY, JSON.stringify(remoteLogs));
+      
+      const remoteIds = new Set(remoteLogs.map(logIdentity));
+      const now = Date.now();
+      
+      // 작성한 지 5분(300000ms)이 경과하지 않았고 원격 서버 응답에 미처 등록되지 않은 임시 로그들은 브라우저 메모리에 수동 병합해 지켜냅니다.
+      pendingLogs = pendingLogs.filter(l => (now - logTs(l) < 300000) && !remoteIds.has(logIdentity(l)));
+      allLogs = [...pendingLogs, ...remoteLogs];
+    }
+  }catch(e){
+    try{
+      // 실패 시 로컬 임시 메모리 데이터와 브라우저 캐시에서 기존 기록을 유지하여 화면이 비는 현상을 전면 차단합니다.
+      const cached = JSON.parse(localStorage.getItem(REMOTE_CACHE_KEY));
+      if (Array.isArray(cached) && cached.length > 0) {
+        allLogs = [...pendingLogs, ...cached];
+      }
+      toast('시트 연결이 잠시 불안정해서 마지막 데이터를 보여줘요.');
+    }catch(cacheError){
+      toast('데이터를 불러오지 못했어요. 네트워크를 확인해주세요.');
+    }
+    console.error(e);
+  }
+  renderCurrentScreen();
+}
+
+async function recordLog(payload){
+  const fullPayload = { timestamp: new Date().toISOString(), ...payload };
+  const normalized = normalizeLogs([fullPayload])[0];
+  
+  // 1. 서버에 가기도 전에 먼저 로컬 대기열(pendingLogs)과 전체 목록(allLogs)에 꽂아서 UI를 즉시 갱신합니다. (반응 속도 극대화)
+  pendingLogs.unshift(normalized);
+  allLogs = [normalized, ...allLogs];
+  renderCurrentScreen();
+  
+  try{
+    // 2. 서버에 비동기로 안전하게 기록 요청을 전송합니다.
+    const res = await backend.postLog(fullPayload);
+    // [보안/디버깅 강화]: 서버가 200 OK 지만 내부 앱 에러를 리턴한 경우 토스트 알림을 띄웁니다.
+    if (res && res.status === 'error') {
+      toast('시트 저장 실패: ' + (res.message || '알 수 없는 오류'));
+      console.error('Sheet error response:', res);
+    }
+  }catch(e){ 
+    toast('원격 저장에는 실패했지만 로컬에 임시 기록되었어요.');
+    console.error(e); 
+  }
+  
+  // 3. 2초 뒤 새로고침을 통해 동기화를 검증합니다.
+  setTimeout(refreshData, 2000);
+  return normalized;
+}
+
+function renderCurrentScreen(){
+  const active = document.querySelector('.screen.active');
+  if(!active) return;
+  const id = active.id;
+  if(id==='screen-home') renderHome();
+  if(id==='screen-map') renderMap();
+  if(id==='screen-report') renderReport();
+  if(id==='screen-log') renderLog();
+}
+
+function startPolling(){
+  if(pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(refreshData, 12000); // 12초 주기로 백그라운드 새로고침 유지
+}
+
+/* ================= PET NAME ================= */
+function openPetNameModal(){
+  document.getElementById('petNameInput').value = petName() || '';
+  document.getElementById('petNameModal').classList.add('active');
+}
+function closePetNameModal(){
+  document.getElementById('petNameModal').classList.remove('active');
+}
+async function savePetNameFromModal(){
+  const val = document.getElementById('petNameInput').value.trim();
+  if(!val) { toast('이름을 입력해주세요.'); return; }
+  try{
+    await recordLog({
+      day: state.day, className: state.className, dorm: state.dorm,
+      userName: state.userName, type:'petname', xp:0, mood: val.slice(0,10)
+    });
+  }catch(e){ toast('저장에 실패했어요.'); console.error(e); return; }
+  closePetNameModal();
+  toast('펫 이름이 저장됐어요!');
+}
+
+/* ================= HOME RENDER ================= */
+function getPetLevel(xp){ return Math.max(1, Math.min(10, 1 + Math.floor(xp/100))); }
+
+function renderHome(){
+  const dayInfo = DAY_STAGES[state.day-1];
+  document.getElementById('dayLabel').textContent = 'DAY ' + state.day;
+  mountIcon('dayIcon', dayInfo.icon);
+
+  const checkedCount = checkedUsersToday().length;
+  const maskedCount = maskedUsersToday().length;
+  const total = ROSTER_PER_CLASS;
+  const ventLog = ventLogToday();
+  const progress = Math.round(((checkedCount/total)*0.4 + (maskedCount/total)*0.4 + (ventLog?1:0)*0.2)*100);
+  document.getElementById('progressPercent').textContent = progress + '%';
+  document.getElementById('progressBar').style.width = progress + '%';
+
+  const checkStat = document.getElementById('checkStat');
+  if(checkStat) checkStat.textContent = `자가진단 ${checkedCount}/${total}`;
+
+  const maskStat = document.getElementById('maskStat');
+  if(maskStat) maskStat.textContent = `마스크 ${maskedCount}/${total}`;
+
+  const ventStat = document.getElementById('ventStat');
+  if(ventStat) ventStat.textContent = ventLog ? '환기 완료' : '환기 대기중';
+
+  const totalXp = classXPTotal();
+  const lv = getPetLevel(totalXp);
+  const name = petName();
+  document.getElementById('petName').textContent = name || '이름 없는 펫';
+  document.getElementById('petLv').textContent = 'LV.' + lv;
+  const xpInLevel = totalXp % 100;
+  document.getElementById('xpFill').style.width = xpInLevel + '%';
+  document.getElementById('xpLabel').textContent = `XP ${totalXp} / ${Math.ceil((totalXp+1)/100)*100}`;
+
+  const iChecked = myTodayLogs('check').length>0;
+  const iMasked = myTodayLogs('mask').length>0;
+  const todayXp = (iChecked?5:0) + (iMasked?10:0);
+  document.getElementById('todayXpBadge').textContent = '+' + todayXp + ' XP';
+
+  const mCheck = document.getElementById('missionCheck');
+  if(mCheck) {
+    mCheck.classList.toggle('done', iChecked);
+    mCheck.onclick = ()=> showScreen('screen-check');
+  }
+
+  const mMask = document.getElementById('missionMask');
+  if(mMask) {
+    mMask.classList.toggle('done', iMasked);
+    mMask.onclick = ()=> showScreen('screen-report');
+    const maskDesc = document.getElementById('maskDesc');
+    if(maskDesc) maskDesc.textContent = iMasked ? '오늘 착용 완료! 고마워요' : '오늘도 예방을 위해 착용해요';
+  }
+
+  const mVent = document.getElementById('missionVent');
+  if(mVent) {
+    mVent.classList.toggle('done', !!ventLog);
+    mVent.onclick = ()=> ventLog ? toast('오늘은 이미 환기를 완료했어요') : doVentilation();
+    const ventDesc = document.getElementById('ventDesc');
+    if(ventDesc) ventDesc.textContent = ventLog
+      ? `${ventLog.userName}님이 오늘 환기를 완료했어요`
+      : '우리 반 전체 미션이에요 (1일 1회)';
+  }
+
+  const logNavSub = document.getElementById('logNavSub');
+  if(logNavSub) logNavSub.textContent = state.className + ' 실천 기록';
+}
+
+/* ================= CHECK (자체 폼 + Google Sheets 연동) ================= */
+function handleSymptomChange(checkbox){
+  const container = document.getElementById('q2Container');
+  const allCheckboxes = container.querySelectorAll('input[name="q2_symptoms"]');
+  if(checkbox.value === '없음' && checkbox.checked){
+    allCheckboxes.forEach(cb => { if(cb.value !== '없음') cb.checked = false; });
+  } else if(checkbox.checked){
+    const noneCheckbox = container.querySelector('input[value="없음"]');
+    if(noneCheckbox) noneCheckbox.checked = false;
+  }
+}
+
+async function submitCheckForm(){
+  if(myTodayLogs('check').length>0){
+    toast('오늘 자가진단을 이미 완료했어요.');
+    showScreen('screen-home');
+    return;
+  }
+
+  const form = document.getElementById('healthForm');
+  const q2Checked = form.querySelectorAll('input[name="q2_symptoms"]:checked');
+  if(q2Checked.length === 0){
+    toast('증상 문항을 하나 이상 선택해주세요.');
+    return;
+  }
+
+  const submitBtn = document.getElementById('submitFormBtn');
+  submitBtn.disabled = true;
+  const answers = {
+    status: form.elements['q1_status'].value,
+    symptoms: Array.from(q2Checked).map(cb => cb.value),
+    sleep: form.elements['q3_sleep'].value,
+    water: form.elements['q4_water'].value
+  };
+  const individualRisk = conditionRiskFromCheck({
+    q1_status: answers.status,
+    q2_symptoms: answers.symptoms.join(', '),
+    q3_sleep: answers.sleep,
+    q4_water: answers.water
+  });
+
+  try{
+    await recordLog({
+      day: state.day, className: state.className, dorm: state.dorm,
+      userName: state.userName, type:'check', xp:5,
+      mood: answers.status,
+      risk: individualRisk,
+      conditionRisk: individualRisk,
+      q1_status: answers.status,
+      q2_symptoms: answers.symptoms.join(', '),
+      q3_sleep: answers.sleep,
+      q4_water: answers.water,
+      answers: JSON.stringify(answers)
+    });
+  }catch(e){
+    toast('저장에 실패했어요. 다시 시도해주세요.');
+    console.error(e);
+    submitBtn.disabled = false;
+    return;
+  }
+
+  toast('자가진단 완료! +5 XP');
+  form.reset();
+  submitBtn.disabled = false;
+  showScreen('screen-home');
+}
+
+/* ================= VENTILATION ================= */
+async function doVentilation(){
+  if(ventLogToday()){
+    toast('오늘은 이미 환기를 완료했어요');
+    return;
+  }
+  try{
+    await recordLog({
+      day: state.day, className: state.className, dorm: state.dorm,
+      userName: state.userName, type:'vent', xp:50
+    });
+  }catch(e){ toast('저장에 실패했어요. 다시 시도해주세요.'); console.error(e); return; }
+
+  toast('환기 완료! 학급 XP +50');
+}
+
+/* ================= MASK ================= */
+async function wearMask(){
+  if(myTodayLogs('mask').length>0){
+    toast('오늘 마스크 착용을 이미 기록했어요!');
+    return;
+  }
+  try{
+    await recordLog({
+      day: state.day, className: state.className, dorm: state.dorm,
+      userName: state.userName, type:'mask', xp:10
+    });
+  }catch(e){ toast('저장에 실패했어요. 다시 시도해주세요.'); console.error(e); return; }
+
+  toast('마스크 착용 기록 완료! +10 XP');
+}
+
+/* ================= REPORT (실제 참여 데이터 기반) ================= */
+function renderReport(){
+  const iChecked = myTodayLogs('check').length>0;
+  const iMasked = myTodayLogs('mask').length>0;
+
+  if(!iChecked){
+    document.getElementById('reportIconWrap').innerHTML = iconHtml('clipboard');
+    document.getElementById('reportIconWrap').style.background = 'var(--neutral-soft)';
+    document.getElementById('riskNum').textContent = '—';
+    document.getElementById('riskBar').style.width='0%';
+    document.getElementById('recommendList').innerHTML =
+      `<div class="recommend-item">${iconHtml('clipboard')} 먼저 IMMUNE CHECK(자가진단)를 완료해주세요.</div>`;
+    const maskCallout = document.getElementById('maskCallout');
+    if(maskCallout) maskCallout.style.display='none';
+    return;
+  }
+
+  const maskCallout = document.getElementById('maskCallout');
+  if(maskCallout) maskCallout.style.display='block';
+
+  const summary = classConditionSummary(state.className);
+  const risk = classVulnerability(state.className) || 30;
+  const maskCoverage = summary
+    ? Math.round(maskedUsersToday().filter(name => summary.checks.some(log=>log.userName===name)).length / summary.participants * 100)
+    : 0;
+  const vented = !!ventLogToday();
+  const tierName = risk >= 70 ? '위험' : (risk >= 50 ? '주의' : (risk >= 30 ? '관리' : '안정'));
+
+  const tierColor = risk>60 ? 'var(--red)' : (risk>35 ? 'var(--yellow)' : 'var(--mint)');
+  document.getElementById('riskNum').textContent = risk + '%';
+  document.getElementById('riskNum').style.color = risk>60 ? 'var(--red)' : (risk>35 ? '#8a6a00' : '#1f6e56');
+  const bar = document.getElementById('riskBar');
+  bar.style.width = risk + '%';
+  bar.style.background = tierColor;
+
+  const iconWrap = document.getElementById('reportIconWrap');
+  iconWrap.style.background = risk>60 ? 'var(--red-soft)' : (risk>35 ? 'var(--yellow-soft)' : 'var(--mint-soft)');
+  iconWrap.innerHTML = iconHtml('shield');
+  iconWrap.style.color = risk>60 ? 'var(--red)' : (risk>35 ? '#8a6a00' : '#1f6e56');
+
+  const topSymptoms = (summary && summary.topSymptoms) ? summary.topSymptoms.map(s=>`${s.name} ${s.count}명`).join(', ') : '특이 증상 적음';
+  const avgCondValue = summary ? summary.avgCondition : 0;
+  const reasons = [
+    `종합 구간: ${tierName}`,
+    `컨디션 평균 위험도 ${avgCondValue}%`,
+    `주요 증상: ${topSymptoms}`,
+    `마스크 보정 ${maskCoverage}% · 환기 ${vented ? '완료' : '대기'}`
+  ];
+  const baseRecs = [];
+  if(risk >= 70){
+    baseRecs.push({icon:'mask', text:'위험 구간: 실내 활동 시 마스크 착용을 강하게 권장해요.'});
+    baseRecs.push({icon:'wind', text:'쉬는 시간마다 짧게 환기하고, 사람이 몰리는 활동은 줄여요.'});
+  } else if(risk >= 50){
+    baseRecs.push({icon:'mask', text:'주의 구간: 증상이 있거나 밀집된 공간에서는 마스크를 착용해요.'});
+    baseRecs.push({icon:'wind', text:'교실 공기가 답답해지기 전에 환기 타이밍을 정해요.'});
+  } else if(risk >= 30){
+    baseRecs.push({icon:'shield', text:'관리 구간: 현재 흐름을 유지하되 증상 변화를 체크해요.'});
+  } else {
+    baseRecs.push({icon:'shield', text:'안정 구간: 기본 위생과 환기 루틴을 유지하면 좋아요.'});
+  }
+  if(summary && summary.tiredCount > 0) baseRecs.push({icon:'moon', text:`피로/수면 부족 신호 ${summary.tiredCount}명: 오늘은 휴식과 일찍 자기를 추천해요.`});
+  if(summary && summary.lowWaterCount > 0) baseRecs.push({icon:'droplet', text:`수분 부족 신호 ${summary.lowWaterCount}명: 물 마시는 시간을 정해요.`});
+  if(!vented) baseRecs.push({icon:'wind', text:'아직 환기 기록이 없어요. 학급 공동 환기를 완료하면 위험도가 내려가요.'});
+  if(maskCoverage < 60) baseRecs.push({icon:'mask', text:'마스크 착용 기록이 낮아요. 필요한 친구부터 착용을 인증해요.'});
+  const recs = baseRecs.slice(0,5);
+  document.getElementById('recommendList').innerHTML = recs.map(r=>
+    `<div class="recommend-item">${iconHtml(r.icon)} ${r.text}</div>`).join('');
+  document.getElementById('recommendList').innerHTML =
+    `<div class="condition-summary"><b>판단 기준</b><br>${reasons.join('<br>')}</div>` +
+    document.getElementById('recommendList').innerHTML;
+
+  if(maskCallout) {
+    maskCallout.className = 'mask-callout ' + (risk>60 ? 'high' : 'low');
+    const maskIcon = document.getElementById('maskCalloutIcon');
+    if(maskIcon) maskIcon.innerHTML = iconHtml('mask');
+    const maskText = document.getElementById('maskCalloutText');
+    if(maskText) maskText.textContent = risk>60
+      ? '오늘은 위험도가 높아요. 꼭 마스크를 착용해주세요.'
+      : '오늘도 예방을 위해 착용하면 좋아요!';
+  }
+
+  const btn = document.getElementById('maskWearBtn');
+  if(btn) {
+    if(iMasked){
+      btn.textContent = '오늘 착용 완료';
+      btn.disabled = true;
+    } else {
+      btn.textContent = '착용했어요';
+      btn.disabled = false;
+    }
+  }
+}
+
+/* ================= LOG ================= */
+function renderLog(){
+  document.getElementById('logTitle').innerHTML = `<span class="icon">${iconHtml('feed')}</span>${state.className} TODAY`;
+  const feed = document.getElementById('logFeed');
+  const logs = todaysLogs().filter(l=> l.type==='check' || l.type==='mask' || l.type==='vent').sort((a,b)=>logTs(b)-logTs(a));
+  if(!logs.length){
+    feed.innerHTML = `<div class="empty-log"><span class="icon">${iconHtml('sprout')}</span>아직 오늘의 기록이 없어요.<br>첫 실천의 주인공이 되어보세요!</div>`;
+    return;
+  }
+  const META = {
+    check: {icon:'clipboard', verb:'자가진단을 완료했어요'},
+    mask:  {icon:'mask', verb:'마스크를 착용했어요'},
+    vent:  {icon:'wind', verb:'환기를 완료했습니다. 고마워요!'},
+  };
+  feed.innerHTML = logs.map(l=>{
+    const m = META[l.type] || {icon:'feed', verb:'실천을 기록했어요'};
+    const t = new Date(l.timestamp);
+    const timeStr = isNaN(t) ? '' : t.getHours().toString().padStart(2,'0') + ':' + t.getMinutes().toString().padStart(2,'0');
+    return `
+    <div class="log-item">
+      <div class="icon">${iconHtml(m.icon)}</div>
+      <div class="log-text"><b>${l.userName}</b>님이 ${m.verb}<div class="log-time">${timeStr}</div></div>
+      <div class="log-xp">+${l.xp}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ================= MAP (실제 참여 데이터 기반) ================= */
+const TIER_CLASS = ['tile-safe','tile-warn','tile-caution','tile-danger'];
+const TIER_LABEL = ['안전','주의','경계','위험'];
+
+function renderMapClassGroup(containerId, names){
+  const el = document.getElementById(containerId);
+  el.innerHTML = names.map(n=>{
+    const score = classVulnerability(n);
+    const tier = tierFromScore(score);
+    const cls = tier===-1 ? 'tile-empty' : TIER_CLASS[tier];
+    const label = tier===-1 ? '대기중' : TIER_LABEL[tier];
+    return `<div class="map-tile ${cls}">
+      <div class="tile-badge"></div>
+      <span class="tile-name">${n}</span>
+      <div class="tile-status">${label}</div>
+    </div>`;
+  }).join('');
+}
+function renderMapDormGroup(containerId, names){
+  const el = document.getElementById(containerId);
+  el.innerHTML = names.map(n=>{
+    const score = dormVulnerability(n);
+    const tier = tierFromScore(score);
+    const cls = tier===-1 ? 'tile-empty' : TIER_CLASS[tier];
+    const label = tier===-1 ? '데이터 없음' : TIER_LABEL[tier];
+    return `<div class="map-tile ${cls}">
+      <div class="tile-badge"></div>
+      <span class="tile-name">${DORM_SHORT[n]}</span>
+      <div class="tile-status">${label}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderMap(){
+  renderMapClassGroup('mapClassUpper', ["3-1","3-2","3-3"]);
+  renderMapClassGroup('mapClassLower', ["3-4","3-5","3-6"]);
+  renderMapDormGroup('mapDorm', DORMS.slice(0,4));
+}
+
+/* ================= INFO MODAL ================= */
+function openInfo(key){
+  const info = INFO_TEXT[key];
+  document.getElementById('infoTitle').textContent = info.title;
+  document.getElementById('infoBody').innerHTML = info.body;
+  document.getElementById('infoModal').classList.add('active');
+}
+function closeInfo(){ document.getElementById('infoModal').classList.remove('active'); }
+function closeInfoOnOverlay(e){ if(e.target.id==='infoModal') closeInfo(); }
+
+/* ================= TOAST ================= */
+let toastTimer;
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> t.classList.remove('show'), 2200);
+}
+
+/* ================= RESUME SESSION ================= */
+if(state.className && state.userName){
+  enterApp();
+}
+</script>
+</body>
+</html>
