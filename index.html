@@ -1099,13 +1099,53 @@ const backend = SHEET_MODE ? api : localApi;
 const REMOTE_CACHE_KEY = 'immunecamp_remote_cache';
 
 /* ================= STATE ================= */
+/* 카카오톡/인스타그램 인앱 브라우저나 시크릿 모드 등 일부 환경은 localStorage가
+   막혀 있거나 새로고침 시 초기화돼요. 그런 환경에서도 진행 상황이 사라지지
+   않도록, 로그인 정보를 주소창의 URL에도 함께 저장해서 이중으로 지켜줍니다. */
+function storageAvailable(){
+  try{
+    const k = '__immunecamp_test__';
+    localStorage.setItem(k, '1');
+    localStorage.removeItem(k);
+    return true;
+  }catch(e){ return false; }
+}
+const STORAGE_OK = storageAvailable();
+
+function readStateFromURL(){
+  try{
+    const p = new URLSearchParams(location.search);
+    const c = p.get('c'), u = p.get('u');
+    if(c && u){
+      return { className: decodeURIComponent(c), userName: decodeURIComponent(u), dorm: p.get('d') ? decodeURIComponent(p.get('d')) : null, day: 1 };
+    }
+  }catch(e){}
+  return null;
+}
+function writeStateToURL(){
+  try{
+    if(!state.className || !state.userName) return;
+    const p = new URLSearchParams(location.search);
+    p.set('c', state.className);
+    p.set('u', state.userName);
+    if(state.dorm) p.set('d', state.dorm);
+    const newUrl = location.pathname + '?' + p.toString() + location.hash;
+    history.replaceState(null, '', newUrl);
+  }catch(e){}
+}
+
 function loadState(){
+  const fromUrl = readStateFromURL();
+  if(fromUrl) return fromUrl;
   let s = null;
   try{ s = JSON.parse(localStorage.getItem('immunecamp_state')); }catch(e){}
   if(!s){ s = { className:null, dorm:null, userName:null, day:1 }; }
   return s;
 }
-function saveState(){ localStorage.setItem('immunecamp_state', JSON.stringify(state)); }
+function saveState(){
+  try{ localStorage.setItem('immunecamp_state', JSON.stringify(state)); }catch(e){}
+  writeStateToURL();
+}
 
 let state = loadState();
 let tempClass = null, tempDorm = null;
@@ -1332,6 +1372,9 @@ async function enterApp(){
   showScreen('screen-home');
   await refreshData();
   startPolling();
+  if(!STORAGE_OK){
+    toast('이 브라우저는 자동 저장이 제한돼요. 새로고침해도 로그인이 유지되도록 지금 주소창의 링크를 저장해두세요.');
+  }
 }
 
 async function refreshData(){
