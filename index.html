@@ -293,13 +293,48 @@ body{
 .report-note{font-size:11px; color:var(--ink-soft); text-align:center; margin-top:8px; line-height:1.5;}
 .sample-warning{
   background:var(--yellow-soft); border:2px dashed var(--ink); border-radius:var(--radius-sm);
-  padding:8px 10px; font-size:11px; font-weight:700; color:var(--ink); text-align:center; margin-bottom:12px; line-height:1.5;
+  padding:7px 10px; font-size:11px; font-weight:700; color:var(--ink); text-align:center; margin-bottom:10px; line-height:1.4;
 }
 .immune-note{
   background:var(--ac-card); border-radius:var(--radius-md); padding:12px 14px; box-shadow:0 4px 0 var(--ac-card-shadow);
   color:var(--ac-text); font-size:12px; font-weight:600; line-height:1.6; margin-bottom:14px;
 }
 .immune-note b{color:var(--ac-wood-dark); font-weight:800;}
+
+/* ---------- Report: one-screen tabs + compact reco tiles ---------- */
+.report-tabs{display:flex; gap:8px; margin-bottom:12px;}
+.report-tab{
+  flex:1; padding:10px 6px; border:2.5px solid var(--ink); border-radius:99px;
+  background:var(--card); font-weight:800; font-size:13px; color:var(--ink-soft);
+  cursor:pointer; font-family:inherit; box-shadow:0 3px 0 var(--ink);
+}
+.report-tab.active{background:var(--red); color:#fff; border-color:var(--ink);}
+.basis-tile{
+  width:100%; text-align:left; display:flex; align-items:center; gap:10px;
+  background:var(--card); border:2.5px solid var(--ink); border-radius:var(--radius-sm);
+  padding:10px 12px; font-size:12px; font-weight:700; color:var(--ink-soft);
+  cursor:pointer; font-family:inherit; box-shadow:0 3px 0 var(--ink); margin-bottom:10px;
+}
+.basis-tile .icon{width:15px; height:15px; flex-shrink:0;}
+.basis-tile .basis-arrow{margin-left:auto; font-weight:900; color:var(--ink-soft);}
+.reco-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:14px;}
+.reco-tile{
+  background:var(--mint-soft); border:2px solid var(--ink); border-radius:var(--radius-sm);
+  padding:10px 11px; cursor:pointer; text-align:left; font-family:inherit;
+  display:flex; flex-direction:column; gap:6px; box-shadow:0 3px 0 var(--ink); min-height:64px;
+}
+.reco-tile .icon{width:16px; height:16px;}
+.reco-tile .reco-title{font-size:11.5px; font-weight:800; color:var(--ink); line-height:1.35;}
+.reco-tile.tier-danger{background:var(--red-soft);}
+.reco-tile.tier-caution{background:var(--caution-soft);}
+.reco-tile.tier-warn{background:var(--yellow-soft);}
+.reco-tile.tier-safe{background:var(--mint-soft);}
+.reco-tile.tier-neutral{background:var(--neutral-soft);}
+.reco-empty{
+  text-align:center; padding:26px 10px; color:var(--ink-soft); font-size:12px; font-weight:700;
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+}
+.reco-empty .icon{width:30px; height:30px; opacity:.7;}
 
 /* ---------- Log ---------- */
 .log-feed{display:flex; flex-direction:column; gap:0;}
@@ -463,13 +498,16 @@ body{
   #screen-map .content .map-tiles{ grid-template-columns:repeat(2,1fr); }
 
   #screen-report .content{
-    display:grid; grid-template-columns:1fr 1.1fr; gap:24px; align-items:start;
+    display:grid; grid-template-columns:1fr 1.3fr; gap:24px; align-items:start;
   }
-  #screen-report .content > *:nth-child(1){ grid-column:1; grid-row:1/5; }
+  #screen-report .content > *:nth-child(1){ grid-column:1; grid-row:1/6; }
   #screen-report .content > *:nth-child(2){ grid-column:2; grid-row:1; }
   #screen-report .content > *:nth-child(3){ grid-column:2; grid-row:2; }
   #screen-report .content > *:nth-child(4){ grid-column:2; grid-row:3; }
+  #screen-report .content > *:nth-child(5){ grid-column:2; grid-row:4; }
+  #screen-report .content > *:nth-child(6){ grid-column:2; grid-row:5; }
   .report-hero{ height:100%; display:flex; flex-direction:column; justify-content:center; }
+  .reco-grid{ grid-template-columns:repeat(3,1fr); }
 
   .log-feed{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; align-items:start; }
 
@@ -580,6 +618,17 @@ body{background:var(--ac-bg); color:var(--ac-text);}
 .recommend-list{gap:6px; margin:12px 0;}
 .recommend-item{padding:9px 11px; font-size:12px; line-height:1.35; gap:8px;}
 .recommend-item .icon{width:14px; height:14px;}
+.report-tab,.basis-tile,.reco-tile{border:none; box-shadow:0 4px 0 var(--ac-card-shadow);}
+.report-tab{background:var(--ac-card); color:var(--ac-text-soft);}
+.report-tab.active{background:var(--ac-green); color:#fff;}
+.basis-tile{background:var(--ac-card); color:var(--ac-text-soft);}
+.reco-tile{background:var(--ac-green-soft);}
+.reco-tile.tier-danger{background:#FBE3DE;}
+.reco-tile.tier-caution{background:#FCEFD6;}
+.reco-tile.tier-warn{background:var(--ac-yellow); background:#FBF0CE;}
+.reco-tile.tier-safe{background:var(--ac-green-soft);}
+.reco-tile.tier-neutral{background:var(--ac-bg);}
+.reco-tile .reco-title{color:var(--ac-text);}
 .toast{background:var(--ac-text); box-shadow:0 8px 20px rgba(0,0,0,.15);}
 .screen#screen-class.active,
 .screen#screen-name.active{
@@ -884,14 +933,25 @@ body{background:var(--ac-bg); color:var(--ac-text);}
     <div class="content">
       <div class="report-hero">
         <div class="report-icon-wrap" id="reportIconWrap"></div>
-        <div class="risk-label">우리 반 오늘 감염 취약도</div>
+        <div class="risk-label" id="riskLabel">우리 반 오늘 감염 취약도</div>
         <div class="risk-num" id="riskNum">—</div>
         <div class="risk-bar-track"><div class="risk-bar-fill" id="riskBar" style="width:0%"></div></div>
-        <div class="report-note">자가진단 컨디션 평균과 환기 여부를 종합한 값이에요</div>
       </div>
 
-      <div class="section-label">오늘의 추천</div>
-      <div class="recommend-list" id="recommendList"></div>
+      <div class="report-tabs" id="reportTabs">
+        <button class="report-tab active" data-tab="class" onclick="switchReportTab('class')">우리 반</button>
+        <button class="report-tab" data-tab="me" onclick="switchReportTab('me')">나의 컨디션</button>
+      </div>
+
+      <div id="sampleWarningSlot"></div>
+
+      <button class="basis-tile" id="basisTile" onclick="openBasisModal()">
+        <span class="icon" id="basisIcon"></span>
+        <span id="basisTileText">판단 근거 보기</span>
+        <span class="basis-arrow">›</span>
+      </button>
+
+      <div class="reco-grid" id="recoGrid"></div>
 
       <div class="mask-callout low" id="maskCallout">
         <div class="icon" id="maskCalloutIcon"></div>
@@ -927,6 +987,15 @@ body{background:var(--ac-bg); color:var(--ac-text);}
       <h3 id="infoTitle">안내</h3>
       <div id="infoBody"></div>
       <button class="modal-close" onclick="closeInfo()">확인했어요</button>
+    </div>
+  </div>
+
+  <!-- ===================== REPORT DETAIL MODAL (reco tile / 판단 근거 tap) ===================== -->
+  <div class="modal-overlay" id="recoModal" onclick="closeRecoOnOverlay(event)">
+    <div class="modal-sheet">
+      <h3 id="recoModalTitle">추천</h3>
+      <div id="recoModalBody"></div>
+      <button class="modal-close" onclick="closeRecoModal()">확인했어요</button>
     </div>
   </div>
 
@@ -985,7 +1054,9 @@ function mountIcon(id, name){ const el = document.getElementById(id); if(el) el.
 const CLASSES = ["3-1","3-2","3-3","3-4","3-5","3-6"];
 const DORMS = ["봉황관 2층","봉황관 3층","우정학사 2층","우정학사 3층","기숙사 없음"];
 const DORM_SHORT = {"봉황관 2층":"봉황2","봉황관 3층":"봉황3","우정학사 2층":"우정2","우정학사 3층":"우정3","기숙사 없음":"—"};
-const ROSTER_PER_CLASS = 30;
+/* 학급별 실제 인원 (진행률 계산의 분모로 사용) */
+const CLASS_ROSTER = { "3-1":22, "3-2":23, "3-3":22, "3-4":27, "3-5":28, "3-6":28 };
+function classRosterSize(cls){ cls = cls || state.className; return CLASS_ROSTER[cls] || 30; }
 const ROSTER_PER_DORM = 20;
 /* 진단 인원이 이 수보다 적으면 위험도 수치의 신빙성이 낮다고 보고 "표본 부족"으로 별도 표시 */
 const MIN_RELIABLE_SAMPLE = 5;
@@ -1017,8 +1088,8 @@ const INFO_TEXT = {
   },
   report: {
     title:"TODAY REPORT란?",
-    body:`<p>우리 반의 오늘 컨디션 평균 위험도와 환기 여부를 종합한 값이에요. 자체 자가진단 폼 답변은 Google 스프레드시트에 함께 저장돼요.</p>
-    <p>마스크는 XP 미션이 아니라, 위험도와 증상 흐름에 따라 리포트에서 권고로만 안내돼요.</p>`
+    body:`<p>'우리 반' 탭은 학급 전체의 컨디션 평균과 환기 여부를 종합한 값이고, '나의 컨디션' 탭은 내가 오늘 제출한 자가진단만 반영한 개인 위험도예요.</p>
+    <p>카드를 눌러보면 왜 그 추천이 떴는지 상세 설명을 볼 수 있어요. 마스크는 XP 미션이 아니라, 위험도와 증상 흐름에 따라 리포트에서 권고로만 안내돼요.</p>`
   },
   log: {
     title:"IMMUNE LOG란?",
@@ -1515,7 +1586,7 @@ function renderHome(){
 
   const checkedCount = checkedUsersToday().length;
   const maskedCount = maskedUsersToday().length;
-  const total = ROSTER_PER_CLASS;
+  const total = classRosterSize();
   const ventLog = ventLogToday();
   const progress = Math.round(((checkedCount/total)*0.4 + (maskedCount/total)*0.4 + (ventLog?1:0)*0.2)*100);
   document.getElementById('progressPercent').textContent = progress + '%';
@@ -1671,102 +1742,254 @@ async function wearMask(){
   toast('마스크 착용 기록 완료! +10 XP');
 }
 
-/* ================= REPORT (실제 참여 데이터 기반) ================= */
-function buildImmuneNote(summary, vented, maskCoverage){
-  const parts = [];
-  if(summary && summary.tiredCount > 0){
-    parts.push('수면이 부족하면 T세포·NK세포 같은 면역세포의 활성과 사이토카인 조절 능력이 떨어져서, 같은 바이러스에 노출돼도 증상이 더 심하거나 오래갈 수 있어요.');
+/* ======================================================================
+   추천 문구 트리 (RECO_CONFIG)
+   ----------------------------------------------------------------------
+   TODAY REPORT 화면의 "우리 반" / "나의 컨디션" 탭에 나오는 카드 문구를
+   전부 여기서 관리해요. 계산 로직(위험도 점수, 증상 집계 등)은 이미
+   위쪽 함수들이 처리해서 매번 "조건(when)"으로 넘겨주니 손댈 필요 없고,
+   각 항목의 title(카드에 보이는 짧은 문구)과 detail(눌렀을 때 모달에
+   뜨는 상세 문구)만 자유롭게 바꾸면 화면에 바로 반영돼요.
+
+   구조:
+   - tier          : 학급 종합 위험도 구간(안정/관리/주의/위험)의 기본 카드
+   - classBranch   : 학급 데이터에서 특정 조건이 감지될 때 "추가로" 뜨는 카드
+                      (여러 개가 동시에 조건을 만족하면 전부 다 표시돼요)
+   - personalTier  : "나"의 개인 위험도 구간(안정/관리/주의/위험)의 기본 카드
+   - personalBranch: 나의 자가진단 답변에서 특정 조건이 감지될 때 뜨는 카드
+
+   각 항목의 when(ctx) 함수가 true를 반환하면 그 카드가 노출돼요.
+   title은 문자열 또는 (ctx)=>문자열 함수로 넣을 수 있어요 (인원수 등 동적 삽입용).
+   ====================================================================== */
+const RECO_CONFIG = {
+  tier: {
+    danger:  { icon:'mask',   tierClass:'tier-danger',  title:'마스크 꼭 착용해요',
+      detail:'위험 구간이에요. 비말(침방울)을 통한 호흡기 감염 위험이 높으니, 실내에서는 마스크를 착용해 코·입 점막을 1차로 보호해주세요. 사람이 몰리는 활동은 잠시 줄이는 것도 도움이 돼요.' },
+    caution: { icon:'mask',   tierClass:'tier-caution', title:'마스크 착용을 권해요',
+      detail:'주의 구간이에요. 증상이 있는 친구와 가까이 있을 때는 마스크로 비말 전파를 막아주는 게 특히 효과적이에요.' },
+    manage:  { icon:'shield', tierClass:'tier-warn',    title:'컨디션을 계속 체크해요',
+      detail:'관리 구간이에요. 지금은 크게 나쁘지 않지만, 초기 피로감은 면역 반응이 떨어지고 있다는 신호일 수 있어요. 내일 자가진단으로 변화를 계속 지켜봐요.' },
+    safe:    { icon:'shield', tierClass:'tier-safe',    title:'지금 습관을 유지해요',
+      detail:'안정 구간이에요. 지금처럼 규칙적인 수면·수분 섭취·환기를 유지하면 점막 면역과 백혈구 활동이 안정적으로 유지돼요.' },
+  },
+  classBranch: {
+    ventMissing: {
+      when: (ctx)=> !ctx.vented,
+      icon:'wind', title:'아직 환기 전이에요',
+      detail:'밀폐된 공간에서는 호흡기 비말과 에어로졸(작은 입자)이 계속 쌓여요. 환기 한 번만 해도 들이마시는 바이러스 양 자체를 크게 줄일 수 있어요. 학급 공동 미션을 오늘 안에 완료해보세요.'
+    },
+    lowMask: {
+      when: (ctx)=> ctx.maskCoverage < 60,
+      icon:'mask', title:'마스크 착용 기록이 적어요',
+      detail:'마스크는 침방울 입자를 물리적으로 걸러주는 1차 방어선이에요. 아직 착용 인증이 적으니, 필요한 친구부터 착용을 인증해봐요.'
+    },
+    tired: {
+      when: (ctx)=> ctx.summary && ctx.summary.tiredCount > 0,
+      icon:'moon', title:(ctx)=>`피로·수면부족 ${ctx.summary.tiredCount}명`,
+      detail:'수면이 부족하면 T세포·NK세포 같은 면역세포의 활성과 사이토카인 조절 능력이 떨어져서, 같은 바이러스에 노출돼도 증상이 더 심하거나 오래갈 수 있어요.'
+    },
+    lowWater: {
+      when: (ctx)=> ctx.summary && ctx.summary.lowWaterCount > 0,
+      icon:'droplet', title:(ctx)=>`수분부족 ${ctx.summary.lowWaterCount}명`,
+      detail:"코와 기관지 점막은 촉촉해야 섬모가 움직여 바이러스·이물질을 밖으로 밀어내는 '점액섬모청소' 기능을 해요. 수분이 부족하면 이 기능이 떨어져 방어력이 약해져요."
+    },
+  },
+  personalTier: {
+    danger:  { icon:'shield', tierClass:'tier-danger',  title:'오늘은 컨디션을 우선해요',
+      detail:'내 위험도가 높은 편이에요. 무리한 활동보다는 휴식과 수분 섭취를 우선하고, 증상이 계속되면 보건 선생님께 알려주세요.' },
+    caution: { icon:'shield', tierClass:'tier-caution', title:'컨디션 관리가 필요해요',
+      detail:'평소보다 컨디션이 처지는 편이에요. 오늘은 수면·수분을 신경 써서 챙겨보세요.' },
+    manage:  { icon:'shield', tierClass:'tier-warn',    title:'괜찮지만 방심은 금물',
+      detail:'크게 나쁘지 않지만 방심하기엔 이른 상태예요. 내일 컨디션 변화를 계속 체크해봐요.' },
+    safe:    { icon:'shield', tierClass:'tier-safe',    title:'컨디션 아주 좋아요',
+      detail:'오늘 컨디션이 좋아요! 지금 습관(수면·수분·환기)을 그대로 유지해봐요.' },
+  },
+  personalBranch: {
+    classGap: { icon:'shield', title:'나는 괜찮지만 우리 반은 주의해요',
+      detail:'내 컨디션은 좋은 편이지만, 우리 반 전체 위험도는 오늘 높은 편이에요. 컨디션이 좋아도 증상이 있는 친구 곁에서는 바이러스에 노출될 수 있으니, 오늘은 마스크를 착용하고 학급 환기에 참여해주세요.' },
+    symptomHeadache: { when:(ctx)=> ctx.symptoms.includes('두통'), icon:'clipboard', title:'두통이 있어요',
+      detail:'두통이 있을 땐 무리한 야외활동보다는 휴식을 취하고, 증상이 심해지면 보건 선생님께 알려주세요.' },
+    symptomCough: { when:(ctx)=> ctx.symptoms.includes('기침'), icon:'clipboard', title:'기침이 있어요',
+      detail:'기침이 있을 때는 다른 친구를 위해 마스크를 착용하고, 기침 예절(옷소매로 가리기)을 지켜주세요.' },
+    symptomRunnyNose: { when:(ctx)=> ctx.symptoms.includes('콧물'), icon:'clipboard', title:'콧물이 있어요',
+      detail:'콧물이 있을 때는 손 위생을 더 신경 쓰고, 사용한 휴지는 바로 버려주세요.' },
+    symptomSoreThroat: { when:(ctx)=> ctx.symptoms.includes('인후통'), icon:'clipboard', title:'인후통이 있어요',
+      detail:'목이 아플 땐 수분을 자주 섭취하고, 증상이 계속되면 보건 선생님께 알려주세요.' },
+    symptomLowFever: { when:(ctx)=> ctx.symptoms.includes('미열'), icon:'clipboard', title:'미열이 있어요',
+      detail:'미열이 있을 땐 활동량을 줄이고 휴식을 취하며 체온 변화를 지켜봐주세요.' },
+    sleepShort: { when:(ctx)=> ctx.sleep.includes('5시간 미만'), icon:'moon', title:'수면이 부족해요',
+      detail:'어젯밤 수면이 5시간 미만이었어요. 오늘은 평소보다 일찍 잠자리에 들어보는 걸 추천해요.' },
+    waterLow: { when:(ctx)=> ctx.water.includes('거의'), icon:'droplet', title:'수분이 부족해요',
+      detail:'오늘 물을 거의 못 마셨어요. 점막 방어력을 위해 물을 조금씩 자주 마셔보세요.' },
+    ventReminder: { when:(ctx)=> !ctx.vented, icon:'wind', title:'환기, 내가 해볼까요?',
+      detail:'우리 반 환기가 아직이에요. 오늘 환기 미션을 완료하면 학급 XP도 함께 올라가요.' },
   }
-  if(summary && summary.lowWaterCount > 0){
-    parts.push("코와 기관지 점막은 촉촉해야 섬모가 움직여 바이러스·이물질을 밖으로 밀어내는 '점액섬모청소' 기능을 해요. 수분이 부족하면 이 기능이 떨어져 방어력이 약해져요.");
+};
+
+/* 위험도 점수를 4단계 구간 키로 변환 (tier / personalTier 룩업에 사용) */
+function riskTierKey(score){
+  if(score >= 70) return 'danger';
+  if(score >= 50) return 'caution';
+  if(score >= 30) return 'manage';
+  return 'safe';
+}
+function tierKoLabel(key){
+  return {danger:'위험', caution:'주의', manage:'관리', safe:'안정'}[key] || '—';
+}
+function resolveTitle(entry, ctx){
+  return typeof entry.title === 'function' ? entry.title(ctx) : entry.title;
+}
+
+let reportTab = 'class'; // 'class' | 'me'
+let lastRecoDetails = {}; // id -> {title, detail} (모달에서 재사용)
+let lastBasisHtml = '';
+
+function switchReportTab(tab){
+  reportTab = tab;
+  document.querySelectorAll('#reportTabs .report-tab').forEach(b=>{
+    b.classList.toggle('active', b.dataset.tab === tab);
+  });
+  renderReport();
+}
+
+function openRecoModal(id){
+  const d = lastRecoDetails[id];
+  if(!d) return;
+  document.getElementById('recoModalTitle').textContent = d.title;
+  document.getElementById('recoModalBody').innerHTML = `<p>${d.detail}</p>`;
+  document.getElementById('recoModal').classList.add('active');
+}
+function closeRecoModal(){ document.getElementById('recoModal').classList.remove('active'); }
+function closeRecoOnOverlay(e){ if(e.target.id==='recoModal') closeRecoModal(); }
+function openBasisModal(){
+  document.getElementById('recoModalTitle').textContent = '판단 근거';
+  document.getElementById('recoModalBody').innerHTML = lastBasisHtml;
+  document.getElementById('recoModal').classList.add('active');
+}
+
+function buildClassCards(){
+  const summary = classConditionSummary(state.className);
+  const risk = classVulnerability(state.className);
+  if(risk === null){
+    return { cards: [], basisHtml: '<p>아직 우리 반 자가진단 기록이 없어요.</p>', risk: null, tierKey: null, sample: null };
   }
-  if(!vented){
-    parts.push('밀폐된 공간에서는 호흡기 비말과 에어로졸(작은 입자)이 계속 쌓여요. 환기만 해도 들이마시는 바이러스 양 자체를 크게 줄일 수 있어요.');
+  const maskedCount = maskedUsersToday().filter(name => summary.checks.some(log=>log.userName===name)).length;
+  const maskCoverage = summary.participants ? Math.round(maskedCount / summary.participants * 100) : 0;
+  const vented = !!ventLogToday();
+  const ctx = { summary, vented, maskCoverage };
+  const tierKey = riskTierKey(risk);
+
+  const cards = [];
+  const tierEntry = RECO_CONFIG.tier[tierKey];
+  cards.push({ id:'tier', icon:tierEntry.icon, tierClass:tierEntry.tierClass, title:resolveTitle(tierEntry, ctx), detail:tierEntry.detail });
+  Object.entries(RECO_CONFIG.classBranch).forEach(([key, entry])=>{
+    if(entry.when(ctx)){
+      cards.push({ id:'class_'+key, icon:entry.icon, tierClass:'tier-neutral', title:resolveTitle(entry, ctx), detail:entry.detail });
+    }
+  });
+
+  const topSymptoms = (summary.topSymptoms && summary.topSymptoms.length)
+    ? summary.topSymptoms.map(s=>`${s.name} ${s.count}명`).join(', ') : '특이 증상 적음';
+  const basisHtml = `
+    <p><b>종합 구간</b> · ${tierKoLabel(tierKey)} (${risk}%)</p>
+    <p><b>참여 인원</b> · ${summary.participants}명 응답</p>
+    <p><b>컨디션 평균 위험도</b> · ${summary.avgCondition}%</p>
+    <p><b>주요 증상</b> · ${topSymptoms}</p>
+    <p><b>마스크 인증</b> · ${maskCoverage}% · <b>환기</b> · ${vented ? '완료' : '대기'}</p>
+  `;
+  return { cards, basisHtml, risk, tierKey, sample: summary.participants };
+}
+
+function buildPersonalCards(){
+  const myChecks = myTodayLogs('check');
+  if(!myChecks.length){
+    return { cards: [], basisHtml: '<p>먼저 IMMUNE CHECK(자가진단)를 완료해주세요.</p>', risk: null, tierKey: null };
   }
-  if(maskCoverage < 60){
-    parts.push('마스크는 침방울(비말) 크기의 입자를 물리적으로 걸러주는 1차 방어선이에요. 증상이 있는 친구 곁에서는 특히 효과가 커요.');
-  }
-  if(!parts.length){
-    parts.push('지금처럼 수면·수분·환기·마스크 습관이 잘 갖춰지면 점막 면역과 백혈구 활동이 안정적으로 유지돼서 감염 위험이 낮게 유지돼요.');
-  }
-  return parts.slice(0,2).join(' ');
+  const myLog = myChecks[myChecks.length-1];
+  const a = parseAnswers(myLog);
+  const risk = conditionRiskFromCheck(myLog);
+  const vented = !!ventLogToday();
+  const ctx = { symptoms: a.symptoms, sleep: a.sleep, water: a.water, vented };
+  const tierKey = riskTierKey(risk);
+
+  const cards = [];
+  const tierEntry = RECO_CONFIG.personalTier[tierKey];
+  cards.push({ id:'ptier', icon:tierEntry.icon, tierClass:tierEntry.tierClass, title:resolveTitle(tierEntry, ctx), detail:tierEntry.detail });
+  Object.entries(RECO_CONFIG.personalBranch).forEach(([key, entry])=>{
+    if(entry.when(ctx)){
+      cards.push({ id:'p_'+key, icon:entry.icon, tierClass:'tier-neutral', title:resolveTitle(entry, ctx), detail:entry.detail });
+    }
+  });
+
+  const symptomsText = a.symptoms.filter(s=>s!=='없음').join(', ') || '없음';
+  const basisHtml = `
+    <p><b>나의 오늘 상태</b> · ${a.status || '—'} (위험도 ${risk}%)</p>
+    <p><b>증상</b> · ${symptomsText}</p>
+    <p><b>수면</b> · ${a.sleep || '—'} · <b>수분</b> · ${a.water || '—'}</p>
+  `;
+  return { cards, basisHtml, risk, tierKey };
 }
 
 function renderReport(){
-  const iChecked = myTodayLogs('check').length>0;
-  const iMasked = myTodayLogs('mask').length>0;
+  const isClass = reportTab === 'class';
+  document.getElementById('riskLabel').textContent = isClass ? '우리 반 오늘 감염 취약도' : '나의 오늘 컨디션 위험도';
 
-  if(!iChecked){
-    document.getElementById('reportIconWrap').innerHTML = iconHtml('clipboard');
-    document.getElementById('reportIconWrap').style.background = 'var(--neutral-soft)';
-    document.getElementById('riskNum').textContent = '—';
-    document.getElementById('riskBar').style.width='0%';
-    document.getElementById('recommendList').innerHTML =
-      `<div class="recommend-item">${iconHtml('clipboard')} 먼저 IMMUNE CHECK(자가진단)를 완료해주세요.</div>`;
-    const maskCallout = document.getElementById('maskCallout');
-    if(maskCallout) maskCallout.style.display='none';
+  const built = isClass ? buildClassCards() : buildPersonalCards();
+  const { cards, basisHtml, risk } = built;
+  lastBasisHtml = basisHtml;
+
+  const iconWrap = document.getElementById('reportIconWrap');
+  const riskNumEl = document.getElementById('riskNum');
+  const bar = document.getElementById('riskBar');
+  const maskCallout = document.getElementById('maskCallout');
+  const basisTile = document.getElementById('basisTile');
+  const basisTileText = document.getElementById('basisTileText');
+  mountIcon('basisIcon', 'chart');
+
+  if(risk === null){
+    iconWrap.innerHTML = iconHtml('clipboard');
+    iconWrap.style.background = 'var(--neutral-soft)';
+    riskNumEl.textContent = '—';
+    riskNumEl.style.color = '';
+    bar.style.width = '0%';
+    basisTile.style.display = 'none';
+    document.getElementById('recoGrid').innerHTML = `<div class="reco-empty" style="grid-column:1/-1;"><span class="icon">${iconHtml('clipboard')}</span><span>아직 표시할 데이터가 없어요.</span></div>`;
+    document.getElementById('sampleWarningSlot').innerHTML = '';
+    if(maskCallout) maskCallout.style.display = 'none';
     return;
   }
 
-  const maskCallout = document.getElementById('maskCallout');
-  if(maskCallout) maskCallout.style.display='block';
-
-  const summary = classConditionSummary(state.className);
-  const risk = classVulnerability(state.className) || 30;
-  const maskCoverage = summary
-    ? Math.round(maskedUsersToday().filter(name => summary.checks.some(log=>log.userName===name)).length / summary.participants * 100)
-    : 0;
-  const vented = !!ventLogToday();
-  const tierName = risk >= 70 ? '위험' : (risk >= 50 ? '주의' : (risk >= 30 ? '관리' : '안정'));
+  basisTile.style.display = 'flex';
+  basisTileText.textContent = '판단 근거 보기';
+  if(maskCallout) maskCallout.style.display = 'block';
 
   const tierColor = risk>60 ? 'var(--red)' : (risk>35 ? 'var(--yellow)' : 'var(--mint)');
-  document.getElementById('riskNum').textContent = risk + '%';
-  document.getElementById('riskNum').style.color = risk>60 ? 'var(--red)' : (risk>35 ? '#8a6a00' : '#1f6e56');
-  const bar = document.getElementById('riskBar');
+  riskNumEl.textContent = risk + '%';
+  riskNumEl.style.color = risk>60 ? 'var(--red)' : (risk>35 ? '#8a6a00' : '#1f6e56');
   bar.style.width = risk + '%';
   bar.style.background = tierColor;
-
-  const iconWrap = document.getElementById('reportIconWrap');
   iconWrap.style.background = risk>60 ? 'var(--red-soft)' : (risk>35 ? 'var(--yellow-soft)' : 'var(--mint-soft)');
   iconWrap.innerHTML = iconHtml('shield');
   iconWrap.style.color = risk>60 ? 'var(--red)' : (risk>35 ? '#8a6a00' : '#1f6e56');
 
-  const topSymptoms = (summary && summary.topSymptoms && summary.topSymptoms.length) ? summary.topSymptoms.map(s=>`${s.name} ${s.count}명`).join(', ') : '특이 증상 적음';
-  const avgCondValue = summary ? summary.avgCondition : 0;
-  const reasons = [
-    `종합 구간: ${tierName}`,
-    `컨디션 평균 위험도 ${avgCondValue}%`,
-    `주요 증상: ${topSymptoms}`,
-    `마스크 보정 ${maskCoverage}% · 환기 ${vented ? '완료' : '대기'}`
-  ];
-  const baseRecs = [];
-  if(risk >= 70){
-    baseRecs.push({icon:'mask', text:'위험 구간: 비말(침방울)을 통한 호흡기 감염 위험이 높아요. 마스크는 코·입 점막을 직접 막아주는 1차 방어선이니 실내에서 꼭 착용해요.'});
-    baseRecs.push({icon:'wind', text:'밀폐된 공간일수록 공기 중 바이러스 농도가 올라가요. 쉬는 시간마다 짧게 환기하고, 사람이 몰리는 활동은 줄여요.'});
-  } else if(risk >= 50){
-    baseRecs.push({icon:'mask', text:'주의 구간: 증상이 있는 친구와 가까이 있을 때는 마스크로 비말 전파를 막아주는 게 효과적이에요.'});
-    baseRecs.push({icon:'wind', text:'환기는 비용 없이 실내 바이러스 농도를 낮추는 가장 확실한 방법이에요. 답답해지기 전에 미리 타이밍을 정해요.'});
-  } else if(risk >= 30){
-    baseRecs.push({icon:'shield', text:'관리 구간: 컨디션은 괜찮은 편이지만, 초기 피로감은 면역 반응이 떨어지고 있다는 신호일 수 있어요. 증상 변화를 계속 체크해요.'});
+  // 표본 부족 경고는 학급 탭에서만
+  const sampleSlot = document.getElementById('sampleWarningSlot');
+  if(isClass && built.sample !== null && built.sample < MIN_RELIABLE_SAMPLE){
+    sampleSlot.innerHTML = `<div class="sample-warning">⚠️ 지금까지 ${built.sample}명만 응답했어요. 표본이 적어 이 수치는 참고용이에요.</div>`;
   } else {
-    baseRecs.push({icon:'shield', text:'안정 구간: 지금처럼 규칙적인 수면·수분 섭취·환기를 유지하면 점막 면역과 백혈구 활동이 안정적으로 유지돼요.'});
+    sampleSlot.innerHTML = '';
   }
-  if(summary && summary.tiredCount > 0) baseRecs.push({icon:'moon', text:`피로/수면 부족 신호 ${summary.tiredCount}명: 수면 부족은 T세포 활성을 떨어뜨려 바이러스 방어력을 낮춰요. 오늘은 휴식과 일찍 자기를 추천해요.`});
-  if(summary && summary.lowWaterCount > 0) baseRecs.push({icon:'droplet', text:`수분 부족 신호 ${summary.lowWaterCount}명: 코·기관지 점막이 마르면 바이러스를 밀어내는 섬모 기능이 떨어져요. 물 마시는 시간을 정해요.`});
-  if(!vented) baseRecs.push({icon:'wind', text:'아직 환기 기록이 없어요. 학급 공동 환기를 완료하면 공기 중 바이러스 농도와 함께 위험도가 내려가요.'});
-  if(maskCoverage < 60) baseRecs.push({icon:'mask', text:'마스크 착용 기록이 낮아요. 마스크는 침방울 입자를 물리적으로 걸러주니, 필요한 친구부터 착용을 인증해요.'});
-  const recs = baseRecs.slice(0,5);
 
-  const sampleWarning = (summary && summary.participants < MIN_RELIABLE_SAMPLE)
-    ? `<div class="sample-warning">⚠️ 지금까지 ${summary.participants}명만 응답했어요. 표본이 적어 이 수치는 참고용이에요 — 더 많은 친구들이 참여할수록 정확해져요.</div>`
-    : '';
-  const immuneNoteText = buildImmuneNote(summary, vented, maskCoverage/100 >= 0.6 ? true : (maskCoverage>=60));
-
-  document.getElementById('recommendList').innerHTML =
-    sampleWarning +
-    `<div class="condition-summary"><b>판단 기준</b><br>${reasons.join('<br>')}</div>` +
-    `<div class="immune-note"><b>오늘의 면역 인사이트</b><br>${immuneNoteText}</div>` +
-    recs.map(r=> `<div class="recommend-item">${iconHtml(r.icon)}<span>${r.text}</span></div>`).join('');
+  // 카드 최대 6개까지만 노출해 스크롤 없이 한 화면에 들어오게 유지
+  const shown = cards.slice(0, 6);
+  lastRecoDetails = {};
+  document.getElementById('recoGrid').innerHTML = shown.map(c=>{
+    lastRecoDetails[c.id] = { title:c.title, detail:c.detail };
+    return `<button class="reco-tile ${c.tierClass}" onclick="openRecoModal('${c.id}')">
+      <span class="icon">${iconHtml(c.icon)}</span>
+      <span class="reco-title">${c.title}</span>
+    </button>`;
+  }).join('');
 
   if(maskCallout) {
     maskCallout.className = 'mask-callout ' + (risk>60 ? 'high' : 'low');
@@ -1776,17 +1999,6 @@ function renderReport(){
     if(maskText) maskText.textContent = risk>60
       ? '오늘은 위험도가 높아요. 꼭 마스크를 착용해주세요.'
       : '오늘도 예방을 위해 착용하면 좋아요!';
-  }
-
-  const btn = document.getElementById('maskWearBtn');
-  if(btn) {
-    if(iMasked){
-      btn.textContent = '오늘 착용 완료';
-      btn.disabled = true;
-    } else {
-      btn.textContent = '착용했어요';
-      btn.disabled = false;
-    }
   }
 }
 
