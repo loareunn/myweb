@@ -782,7 +782,7 @@ body{background:var(--ac-bg); color:var(--ac-text);}
 
     <div class="content">
       <form id="healthForm" class="check-form-card" onsubmit="event.preventDefault(); submitCheckForm();">
-        <p class="check-form-hint">딱 1분만 투자해 오늘의 컨디션을 체크하면 우리 반 XP에 바로 반영되고, 면역 브리핑이 제공돼요.</p>
+        <p class="check-form-hint">오늘의 컨디션을 체크하면 우리 반 XP에 바로 반영되고, 면역 브리핑이 제공돼요. 결과의 신뢰도를 위해서 '면역 지도'와 '면역 브리핑'은 시간이 조금 지나고 데이터가 충분히 쌓였을 때 들어가는 편이 좋아요.</p>
 
         <div class="form-question">
           <div class="form-q-header">
@@ -1739,7 +1739,7 @@ function handleSymptomChange(checkbox){
 
 async function submitCheckForm(){
   if(myTodayLogs('check').length>0){
-    toast('오늘 자가진단을 이미 완료했어요.');
+    toast('오늘의 자가진단을 이미 완료했어요.');
     showScreen('screen-home');
     return;
   }
