@@ -241,13 +241,14 @@ body{
 .back-btn .icon{width:16px; height:16px;}
 .page-title{font-size:18px; font-weight:800; color:var(--ink); display:flex; align-items:center; gap:8px;}
 .page-title .icon{width:20px; height:20px;}
+<!-- 상단 헤더 오른쪽 영역 -->
 <div class="header-right" style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
-  <!-- 🏆 학급 랭킹 버튼 추가 -->
+  <!-- 🏆 학급 랭킹 버튼 -->
   <button class="btn-ranking" onclick="openRankingModal()" style="padding: 8px 14px; background: #EEF2FF; color: #4F46E5; border: 1px solid #C7D2FE; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;">
     🏆 학급 랭킹
   </button>
   
-  <span class="badge">🌱 데모 모드</span>
+  <span class="badge" style="padding: 6px 12px; background: #E5E7EB; border-radius: 20px; font-size: 0.9em;">🌱 데모 모드</span>
 </div>
 
 /* ---------- Map ---------- */
