@@ -782,7 +782,7 @@ body{background:var(--ac-bg); color:var(--ac-text);}
 
     <div class="content">
       <form id="healthForm" class="check-form-card" onsubmit="event.preventDefault(); submitCheckForm();">
-        <p class="check-form-hint">오늘 컨디션을 체크하면 Google 스프레드시트에 기록되고, 우리 반 XP에 바로 반영돼요.</p>
+        <p class="check-form-hint">딱 1분만 투자해 오늘의 컨디션을 체크하면 우리 반 XP에 바로 반영되고, 면역 브리핑이 제공돼요.</p>
 
         <div class="form-question">
           <div class="form-q-header">
@@ -1093,9 +1093,12 @@ const DAY_STAGES = [
 const INFO_TEXT = {
   camp: {
     title:"IMMUNE-CAMP 안내",
-    body:`<p>2026.7.13 ~ 7.17, 5일간 진행되는 학년 전체 면역 캠프예요.</p>
+    body:`<p>감기가 유행한다는 소식은 들려오는데 별로 와닿지도 않고, 무엇을 어떻게 챙겨야 할지 몰라 막막했던 경험 있으신가요? 스스로 컨디션을 제대로 살피지 못한 채 무리하다가 크게 앓아 누운 적은 없었나요?
+</p>
+    <p>IMMUNE-CAMP는 이런 순간들에서 출발했어요. IMMUNE-CAMP는 개인적·집단적 면역 위험도를 가시화하고, 자발적인 환기 및 컨디션 관리 실천을 통해 공동체 건강을 지키는 것을 목표로 하는 단기 프로젝트예요. 2026.7.13 ~ 7.17, 5일간 학년 전체가 함께 진행해요.</p>
     <p>매일 자가진단과 학급 공동 환기를 실천하면 우리 반 이뮤니가 성장하고, 학급 XP 랭킹에 반영돼요.</p>
-    <p>상품은 학급 순위가 아니라, <b>매일 참여한 친구들 중 추첨</b>으로 드려요. 오늘 참여하면 오늘의 추첨에 들어가요!</p>`
+    <p>꾸준히 참여한 친구들에게는 캠프가 끝난 뒤 특별한 <b>상품 추첨권</b>이 주어져요.</p>
+    <p>오직 69기만을 위해 준비한 면역 캠프를 통해 나를 지키고, 우리를 지켜봐요!</p>`
   },
   check: {
     title:"IMMUNE CHECK란?",
@@ -1120,7 +1123,7 @@ const INFO_TEXT = {
   rank: {
     title:"CLASS RANKING이란?",
     body:`<p>학급별로 지금까지 쌓인 XP 총합을 높은 순서대로 보여주는 순위보드예요. XP는 날짜가 바뀌어도 계속 누적돼요.</p>
-    <p>순위는 재미로 보는 랭킹이고, 실제 상품은 매일 참여한 친구들 중 추첨으로 드려요.</p>`
+    <p>순위는 재미로 보는 랭킹이고, 실제 상품은 꾸준히 참여한 친구들에게 캠프가 끝난 뒤 추첨권으로 드려요.</p>`
   }
 };
 
@@ -2020,25 +2023,39 @@ function renderReport(){
 function renderLog(){
   document.getElementById('logTitle').innerHTML = `<span class="icon">${iconHtml('feed')}</span>${state.className} TODAY`;
   const feed = document.getElementById('logFeed');
-  const logs = todaysLogs().filter(l=> l.type==='check' || l.type==='mask' || l.type==='vent').sort((a,b)=>logTs(b)-logTs(a));
+  const logs = todaysLogs()
+    .filter(l=> l.type==='check' || l.type==='mask' || l.type==='vent' || l.type==='petname' || l.type==='petstyle')
+    .sort((a,b)=>logTs(b)-logTs(a));
   if(!logs.length){
     feed.innerHTML = `<div class="empty-log"><span class="icon">${iconHtml('sprout')}</span>아직 오늘의 기록이 없어요.<br>첫 실천의 주인공이 되어보세요!</div>`;
     return;
   }
-  const META = {
-    check: {icon:'clipboard', verb:'자가진단을 완료했어요'},
-    mask:  {icon:'mask', verb:'마스크를 착용했어요'},
-    vent:  {icon:'wind', verb:'환기를 완료했습니다. 고마워요!'},
-  };
+  function logIcon(l){
+    if(l.type==='check') return 'clipboard';
+    if(l.type==='mask') return 'mask';
+    if(l.type==='vent') return 'wind';
+    if(l.type==='petname' || l.type==='petstyle') return 'edit';
+    return 'feed';
+  }
+  function logVerb(l){
+    if(l.type==='check') return '자가진단을 완료했어요';
+    if(l.type==='mask') return '마스크를 착용했어요';
+    if(l.type==='vent') return '환기를 완료했습니다. 고마워요!';
+    if(l.type==='petname') return `이뮤니 이름을 '${l.mood}'라고 지어줬어요`;
+    if(l.type==='petstyle'){
+      const sprite = PET_SPRITES.find(s => s.key === l.mood);
+      return `이뮤니를 ${sprite ? sprite.label : '새로운'} 모습으로 바꿨어요`;
+    }
+    return '실천을 기록했어요';
+  }
   feed.innerHTML = logs.map(l=>{
-    const m = META[l.type] || {icon:'feed', verb:'실천을 기록했어요'};
     const t = new Date(l.timestamp);
     const timeStr = isNaN(t) ? '' : t.getHours().toString().padStart(2,'0') + ':' + t.getMinutes().toString().padStart(2,'0');
     return `
     <div class="log-item">
-      <div class="icon">${iconHtml(m.icon)}</div>
-      <div class="log-text"><b>${l.userName}</b>님이 ${m.verb}<div class="log-time">${timeStr}</div></div>
-      <div class="log-xp">+${l.xp}</div>
+      <div class="icon">${iconHtml(logIcon(l))}</div>
+      <div class="log-text"><b>${l.userName}</b>님이 ${logVerb(l)}<div class="log-time">${timeStr}</div></div>
+      ${l.xp>0 ? `<div class="log-xp">+${l.xp}</div>` : ''}
     </div>`;
   }).join('');
 }
