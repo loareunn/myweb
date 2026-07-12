@@ -157,14 +157,43 @@ body{
   box-shadow:0 5px 0 var(--ink); margin-bottom:24px;
   display:flex; align-items:center; gap:16px; position:relative;
 }
-.pet-avatar{
-  width:200px; height:200px; border-radius:50%; background:var(--yellow); /* 크기를 66px에서 80px로 확대 */
-  border:2.5px solid var(--ink);
-  display:flex; align-items:center; justify-content:center;
-  flex-shrink:0; margin-top:6px; padding:8px; overflow:hidden; /* 패딩을 15px에서 8px로 축소 */
+.pet-avatar {
+  width: 200px; 
+  height: 200px; 
+  border-radius: 50%; 
+  background: var(--yellow); 
+  border: 2.5px solid var(--ink);
+  
+  /* flex 정렬 속성을 명확히 해서 무조건 정중앙에 오도록 설정 */
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  
+  flex-shrink: 0; 
+  margin-top: 6px; 
+  padding: 8px; 
+  overflow: hidden; 
 }
-.pet-avatar .icon{width:100%; height:100%;}
-.pet-avatar img{width:130%; height:130%; object-fit:contain; display:block;}
+
+.pet-avatar .icon {
+  width: 100%; 
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pet-avatar img {
+  /* 100%로 맞춰야 정중앙 정렬이 깨지지 않습니다 */
+  width: 100%; 
+  height: 100%; 
+  object-fit: contain; 
+  display: block;
+  
+  /* 💡 만약 캐릭터 이미지를 동그라미에 꽉 차게 더 확대하고 싶다면 
+     아래 주석을 풀고 숫자를 조절하세요. (중심을 유지한 채 확대됨) */
+  /* transform: scale(1.2); */
+}
 .pet-info{flex:1; margin-top:6px; min-width:0;}
 .pet-name-row{display:flex; align-items:center; gap:6px; margin-bottom:2px;}
 .pet-info .pet-name{font-size:15px; font-weight:800; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
