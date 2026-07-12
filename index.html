@@ -1338,28 +1338,39 @@ function parseAnswers(log){
 function conditionRiskFromCheck(log){
   const a = parseAnswers(log);
   const symptoms = a.symptoms.filter(s=>s && s !== '없음');
+
+  // 몸 상태
   let bodyRisk = 25;
   if(a.status.includes('매우')) bodyRisk = 5;
-  else if(a.status.includes('괜찮')) bodyRisk = 20;
-  else if(a.status.includes('피곤')) bodyRisk = 55;
-  else if(a.status.includes('좋지')) bodyRisk = 85;
+  else if(a.status.includes('괜찮')) bodyRisk = 25;
+  else if(a.status.includes('피곤')) bodyRisk = 65;
+  else if(a.status.includes('좋지')) bodyRisk = 90;
 
+  // 증상
   let symptomRisk = 0;
-  if(symptoms.length === 1) symptomRisk = 35;
-  else if(symptoms.length === 2) symptomRisk = 60;
-  else if(symptoms.length >= 3) symptomRisk = 85;
+  if(symptoms.length === 1) symptomRisk = 45;
+  else if(symptoms.length === 2) symptomRisk = 70;
+  else if(symptoms.length >= 3) symptomRisk = 90;
 
+  // 수면
   let sleepRisk = 20;
   if(a.sleep.includes('7시간 이상')) sleepRisk = 5;
   else if(a.sleep.includes('5~7')) sleepRisk = 35;
   else if(a.sleep.includes('5시간 미만')) sleepRisk = 75;
 
+  // 수분 섭취
   let waterRisk = 15;
   if(a.water.includes('충분')) waterRisk = 5;
   else if(a.water.includes('보통')) waterRisk = 25;
   else if(a.water.includes('거의')) waterRisk = 60;
 
-  const score = bodyRisk * 0.4 + symptomRisk * 0.35 + sleepRisk * 0.2 + waterRisk * 0.05;
+  // 최종 점수 (증상 비중 강화)
+  const score =
+    bodyRisk * 0.35 +
+    symptomRisk * 0.45 +
+    sleepRisk * 0.15 +
+    waterRisk * 0.05;
+
   return Math.max(5, Math.min(95, Math.round(score)));
 }
 
