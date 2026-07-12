@@ -241,6 +241,14 @@ body{
 .back-btn .icon{width:16px; height:16px;}
 .page-title{font-size:18px; font-weight:800; color:var(--ink); display:flex; align-items:center; gap:8px;}
 .page-title .icon{width:20px; height:20px;}
+<div class="header-right" style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
+  <!-- 🏆 학급 랭킹 버튼 추가 -->
+  <button class="btn-ranking" onclick="openRankingModal()" style="padding: 8px 14px; background: #EEF2FF; color: #4F46E5; border: 1px solid #C7D2FE; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+    🏆 학급 랭킹
+  </button>
+  
+  <span class="badge">🌱 데모 모드</span>
+</div>
 
 /* ---------- Map ---------- */
 .map-group{margin-bottom:18px;}
@@ -768,7 +776,7 @@ body{background:var(--ac-bg); color:var(--ac-text);}
 
     <div class="content">
       <form id="healthForm" class="check-form-card" onsubmit="event.preventDefault(); submitCheckForm();">
-        <p class="check-form-hint">오늘 컨디션을 체크하면 Google 스프레드시트에 기록되고, 우리 반 XP에 바로 반영돼요.</p>
+        <p class="check-form-hint">오늘 컨디션을 체크하면 종합 리포트가 제공되고, 우리 반 XP에 반영돼요.</p>
 
         <div class="form-question">
           <div class="form-q-header">
@@ -2088,4 +2096,98 @@ if(state.className && state.userName){
 }
 </script>
 </body>
+<!-- ================= [🏆 실시간 학급 랭킹 모달 통합 코드] ================= -->
+<style>
+  /* 랭킹 모달 전용 디자인 */
+  .ranking-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-radius: 10px;
+    background: #F9FAFB;
+    border: 1px solid #E5E7EB;
+    font-size: 0.95rem;
+    color: #374151;
+  }
+  .ranking-item.rank-1 { background: #FEF3C7; border-color: #FCD34D; color: #92400E; font-weight: 700; }
+  .ranking-item.rank-2 { background: #F3F4F6; border-color: #D1D5DB; color: #1F2937; font-weight: 600; }
+  .ranking-item.rank-3 { background: #FFEDD5; border-color: #FDBA74; color: #9A3412; font-weight: 600; }
+  .rank-badge-default { color: #9CA3AF; font-weight: 600; padding-left: 4px; }
+</style>
+
+<!-- 랭킹 팝업창(모달) HTML 구조 -->
+<div class="modal-overlay" id="rankingModal">
+  <div class="modal-sheet" style="max-width: 380px; padding: 24px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+      <h3 style="margin: 0; font-size: 1.2rem; font-weight: 700; color: #111827;">🏆 실시간 학급 랭킹</h3>
+      <button onclick="closeRankingModal()" style="background: none; border: none; font-size: 1.2rem; color: #9CA3AF; cursor: pointer; padding: 4px;">✕</button>
+    </div>
+    <p style="margin: 0 0 20px 0; font-size: 0.85rem; color: #6B7280;">우리 반 다마고치를 키우기 위한 면역 실천 순위</p>
+    
+    <ul id="rankingList" style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px;">
+      <!-- JavaScript가 이 안쪽에 1위~6위 목록을 자동으로 그려줍니다 -->
+    </ul>
+  </div>
+</div>
+
+<script>
+  // 랭킹 창 열기
+  function openRankingModal() {
+    document.getElementById('rankingModal').classList.add('active');
+    renderClassRanking();
+  }
+
+  // 랭킹 창 닫기
+  function closeRankingModal() {
+    document.getElementById('rankingModal').classList.remove('active');
+  }
+
+  // 학급별 XP 점수 계산 및 화면 그리기
+  function renderClassRanking() {
+    // 1. 3학년 1반부터 6반까지 점수 0점으로 초기화
+    const classXpMap = { "3-1": 0, "3-2": 0, "3-3": 0, "3-4": 0, "3-5": 0, "3-6": 0 };
+
+    // 2. 현재 앱에 로드된 전체 로그 데이터 가져오기 (변수명이 다르면 수정 필요!)
+    const sourceLogs = window.allLogs || window.logs || []; 
+    
+    sourceLogs.forEach(log => {
+      if (log.className && classXpMap[log.className] !== undefined && log.xp) {
+        classXpMap[log.className] += Number(log.xp);
+      }
+    });
+
+    // 3. 점수가 높은 순서대로 내림차순 정렬
+    const sortedRanking = Object.entries(classXpMap).sort((a, b) => b[1] - a[1]);
+
+    // 4. HTML 리스트 렌더링
+    const listContainer = document.getElementById('rankingList');
+    listContainer.innerHTML = '';
+
+    sortedRanking.forEach(([className, totalXp], index) => {
+      const rank = index + 1;
+      let itemClass = 'ranking-item';
+      let rankBadge = '';
+
+      if (rank === 1) { itemClass += ' rank-1'; rankBadge = '🥇 1위'; }
+      else if (rank === 2) { itemClass += ' rank-2'; rankBadge = '🥈 2위'; }
+      else if (rank === 3) { itemClass += ' rank-3'; rankBadge = '🥉 3위'; }
+      else { rankBadge = `<span class="rank-badge-default">${rank}위</span>`; }
+
+      const li = document.createElement('li');
+      li.className = itemClass;
+      li.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="min-width: 50px; display: inline-block;">${rankBadge}</span>
+          <span style="font-weight: 500;">${className}반</span>
+        </div>
+        <span style="font-family: monospace; font-size: 0.95rem;">
+          <strong>${totalXp.toLocaleString()}</strong> <span style="font-size:0.8rem; color:#6B7280;">XP</span>
+        </span>
+      `;
+      listContainer.appendChild(li);
+    });
+  }
+</script>
+<!-- ================= [🏆 랭킹 모달 통합 코드 끝] ================= -->
 </html>
