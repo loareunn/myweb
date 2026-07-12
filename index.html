@@ -114,6 +114,8 @@ body{
 .day-chip .icon{width:18px; height:18px;}
 .profile-chip{
   font-size:13px; color:var(--ink-soft); font-weight:600; text-align:right;
+  position: relative; /* 버튼 클릭 활성화를 위한 위치 속성 */
+  z-index: 10;        /* 앞으로 가져와서 클릭 영역 확보 */
 }
 .profile-chip b{color:var(--ink); font-weight:800;}
 .account-switch{
@@ -156,10 +158,10 @@ body{
   display:flex; align-items:center; gap:16px; position:relative;
 }
 .pet-avatar{
-  width:66px; height:66px; border-radius:50%; background:var(--yellow);
+  width:80px; height:80px; border-radius:50%; background:var(--yellow); /* 크기를 66px에서 80px로 확대 */
   border:2.5px solid var(--ink);
   display:flex; align-items:center; justify-content:center;
-  flex-shrink:0; margin-top:6px; padding:15px; overflow:hidden;
+  flex-shrink:0; margin-top:6px; padding:8px; overflow:hidden; /* 패딩을 15px에서 8px로 축소 */
 }
 .pet-avatar .icon{width:100%; height:100%;}
 .pet-avatar img{width:100%; height:100%; object-fit:contain; display:block;}
@@ -461,7 +463,21 @@ body{
   .pet-card .pet-avatar{ width:56px; height:56px; margin-bottom:4px; padding:13px; }
   .pet-card .today-xp-badge{ align-self:flex-end; margin-top:-38px; }
 
-  .topbar{ padding:8px 4px 4px; }
+  .topbar{
+  display:flex; align-items:flex-start; justify-content:space-between; /* 정렬 기준을 위쪽으로 맞춤 */
+  padding:18px 20px 18px;
+}
+.profile-chip{
+  font-size:13px; color:var(--ink-soft); font-weight:600; 
+  text-align:left; /* 우측 정렬을 좌측 정렬로 변경 */
+  position: relative;
+  z-index: 10;
+}
+.account-switch{
+  border:2px solid var(--ink); background:var(--card); border-radius:99px;
+  padding:6px 12px; font:800 11px inherit; color:var(--ink-soft); cursor:pointer; 
+  margin-top:6px; display: block; /* 줄바꿈 및 정렬 안정화 */
+}
 
   #screen-map .content{
     display:grid; grid-template-columns:repeat(3,1fr); gap:28px; align-items:start;
