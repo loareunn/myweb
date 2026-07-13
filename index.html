@@ -1411,7 +1411,13 @@ function classVulnerability(cls){
   const masked = maskedUsersToday(cls).filter(name => summary.checks.some(log=>log.userName===name)).length;
   const vented = !!ventLogToday(cls);
   const maskCoverage = checked ? masked / checked : 0;
-  let score = summary.avgCondition;
+  const highestRisk = summary.checks.length
+  ? Math.max(...summary.checks.map(conditionRiskFromCheck))
+  : 0;
+
+let score =
+    summary.avgCondition * 0.7 +
+    highestRisk * 0.3;
   score -= maskCoverage * 12;
   score -= vented ? 8 : 0;
   return Math.max(5, Math.min(95, Math.round(score)));
@@ -1437,19 +1443,31 @@ function dormVulnerability(dormName){
   const maskedCount = summary.checks.filter(log=>maskedNames.has(log.userName)).length;
   const maskCoverage = summary.participants ? maskedCount / summary.participants : 0;
   const vented = todaysLogsForDorm(dormName).some(l=>l.type==='vent');
-  let score = summary.avgCondition;
+  const highestRisk = summary.checks.length
+  ? Math.max(...summary.checks.map(conditionRiskFromCheck))
+  : 0;
+let score =
+    summary.avgCondition * 0.7 +
+    highestRisk * 0.3;
   score -= maskCoverage * 12;
   score -= vented ? 8 : 0;
   return Math.max(5, Math.min(95, Math.round(score)));
 }
 function tierFromScore(score){
   if(score === null || score === undefined) return -1;
-  if(score <= 30) return 0;
-  if(score <= 50) return 1;
-  if(score <= 70) return 2;
+
+  // 안전
+  if(score <= 20) return 0;
+
+  // 주의
+  if(score <= 40) return 1;
+
+  // 경계
+  if(score <= 60) return 2;
+
+  // 위험
   return 3;
 }
-
 /* ================= ONBOARDING ================= */
 const classGrid = document.getElementById('classGrid');
 CLASSES.forEach(c=>{
